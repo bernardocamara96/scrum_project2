@@ -264,10 +264,10 @@ function writeDate() {
 
 //Vai colorir a aplicação com as cores anteriormente guardadas em localStorage
 colorizeApp(
-   localStorage.getItem("background_color"),
-   localStorage.getItem("toDo_color"),
-   localStorage.getItem("doing_color"),
-   localStorage.getItem("done_color")
+   localStorage.getItem("background_color") || "#172b4c",
+   localStorage.getItem("toDo_color") || "#f1f2f4",
+   localStorage.getItem("doing_color") || "#f1f2f4",
+   localStorage.getItem("done_color") || "#f1f2f4"
 );
 
 document.querySelector("#background_color").value = localStorage.getItem("background_color") || "#172b4c";
