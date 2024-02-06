@@ -270,10 +270,10 @@ colorizeApp(
    localStorage.getItem("done_color")
 );
 
-document.querySelector("#background_color").value = localStorage.getItem("background_color");
-document.querySelector("#toDo_color").value = localStorage.getItem("toDo_color");
-document.querySelector("#doing_color").value = localStorage.getItem("doing_color");
-document.querySelector("#done_color").value = localStorage.getItem("done_color");
+document.querySelector("#background_color").value = localStorage.getItem("background_color") || "#172b4c";
+document.querySelector("#toDo_color").value = localStorage.getItem("toDo_color") || "#f1f2f4";
+document.querySelector("#doing_color").value = localStorage.getItem("doing_color") || "#f1f2f4";
+document.querySelector("#done_color").value = localStorage.getItem("done_color") || "#f1f2f4";
 
 /*Evento de click no botão apply que vai buscar as cores escolhidas pelo utilizador e vai aplicar à aplicação.
 Estas cores ficam guardadas em localStorage para quando o utilizador mudar de página as cores se manterem*/
