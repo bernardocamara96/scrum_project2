@@ -11,8 +11,6 @@
    padding: 0;
 }
 
-/*Background azul da aplicação.*/
-
 #body_color {
    z-index: -10;
    background-color: rgb(23, 43, 76);
@@ -24,7 +22,6 @@
    box-shadow: -2.5px -2.5px 2.5px 1px rgb(0, 0, 0);
 }
 
-/*Background branco da aplicação. Dá a cor ao aside e ao header. Fica por baixo do background azul.*/
 #aside_color {
    position: fixed;
    z-index: -11;
@@ -33,7 +30,6 @@
    width: 100%;
 }
 
-/*Fixa o nome da aplicação no canto superior esquerdo.*/
 h1 {
    position: fixed;
    color: var(--black);
@@ -43,7 +39,6 @@ h1 {
    width: 250px;
 }
 
-/*Fixa o footer da aplicação no canto inferior esquerdo.*/
 footer {
    position: fixed;
    width: 240px;
@@ -58,18 +53,6 @@ footer ul {
    margin-left: 20px;
 }
 
-/*Fixa o aside à esquerda com o tamanho e largura inserido*/
-aside {
-   position: fixed;
-   margin-top: 70px;
-   flex-shrink: 0;
-   width: 255px;
-   height: 755px;
-   color: var(--black);
-   background-color: transparent;
-}
-
-/*Fixa todas as forms da aplicação no centro da janela*/
 form {
    position: fixed;
    border-radius: 8px;
@@ -157,7 +140,6 @@ textarea {
    box-shadow: 0px 0px 2px 0px black;
 }
 
-/*Selecionador do input do tipo text dentro da div com id #Login_inputs*/
 #login_inputs input[type="text"] {
    margin-bottom: 25px;
 }
@@ -166,6 +148,17 @@ textarea {
 
 #scrum_section {
    display: flex;
+}
+
+aside {
+   position: fixed;
+   margin-top: 70px;
+   flex-shrink: 0;
+   width: 255px;
+   background-color: var(--white_active);
+   height: 755px;
+   color: var(--black);
+   background-color: transparent;
 }
 
 img {
@@ -187,8 +180,7 @@ img {
    padding: 0px 0px 10px 7px;
    width: 234px;
 }
-/*Selecionador de todas as colunas toDo, doing e done. flex-shrink faz com que quando fazemos o resize as colunas não mudem de forma 
-e matém-se na mesma poisção*/
+
 .column {
    margin: 80px 10px 0px 10px;
    flex-shrink: 0;
@@ -204,7 +196,6 @@ e matém-se na mesma poisção*/
    margin-left: 380px;
 }
 
-/*overflow-wrap faz com que quando a palavra chegar ao max-width seja partida e vá para alinha a seguir*/
 .title {
    text-align: center;
    font-size: 16px;
@@ -217,8 +208,6 @@ e matém-se na mesma poisção*/
    max-width: 250px;
 }
 
-/*display: flex faz com que todos os elementos filhos deste sejam flexíveis. Quando não há nenhum flex-direction defenido
-o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham um comportamento igual a um "span"*/
 .task {
    display: flex;
    box-shadow: 0px 0.1px 1px 0.3px rgb(160, 160, 160);
@@ -240,8 +229,6 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
    border-color: #252525;
 }
 
-/*Esta classe existe principalmente para diferenciar o elemento que está a ser arrastado. No máximo só um elemento
-poderá ter esta classe. Se não houver nenhum elemento a ser arrastado esta classe não vai estar a ser usada*/
 .drag {
    background-color: grey;
 }
@@ -254,7 +241,6 @@ poderá ter esta classe. Se não houver nenhum elemento a ser arrastado esta cla
    max-width: 200px;
 }
 
-/*transform: translate(0%,-50%) faz uma translação do elemento para cima igual ao valor de metade do elemento*/
 .task_btn {
    border-radius: 50%;
    font-size: 14px;
@@ -293,8 +279,6 @@ poderá ter esta classe. Se não houver nenhum elemento a ser arrastado esta cla
    cursor: pointer;
 }
 
-/*flex-direction: column faz com que os elementos se comportem como um div,ou seja irão para baixo uns dos outros
-consoante vão sendo adicionados*/
 .task_list {
    display: flex;
    flex-direction: column;
@@ -329,14 +313,6 @@ consoante vão sendo adicionados*/
    font-weight: bold;
 }
 
-#btn_task:hover {
-   background-color: var(--white_hover);
-}
-
-#btn_task:active {
-   background-color: var(--white_active);
-}
-
 #menu {
    display: flex;
    flex-direction: column;
@@ -363,7 +339,6 @@ consoante vão sendo adicionados*/
    z-index: 20px;
 }
 
-/*background a preto das modais, aparece um pouco acima do resto da aplicação mas abaixo da modal*/
 #background {
    position: fixed;
    height: 100%;
@@ -374,7 +349,6 @@ consoante vão sendo adicionados*/
    z-index: 2;
 }
 
-/*todas as modais vão aparacer no centro um pouco acima do background a preto*/
 .modal {
    position: fixed;
    height: 390px;
@@ -417,7 +391,6 @@ consoante vão sendo adicionados*/
    font-weight: bold;
 }
 
-/*overflow-x faz com que aparece uma scroll bar quando o que está dentro da div atinja o max-width */
 #modal_title {
    height: 30px;
    margin: 0px 30px 10px 30px;
@@ -521,19 +494,52 @@ consoante vão sendo adicionados*/
 }
 
 #retrospective_title h2 {
-   position: sticky;
+   position: fixed;
    padding-left: 20px;
    font-weight: 500;
-   padding: 0px 0px 0px 20px;
+   padding: 15px 0px 0px 20px;
    width: 250px;
-   margin: 0px 0px 0px 400px;
+   margin: 35px 0px 0px 400px;
    color: var(--white);
 }
 
-/*o border-collapse faz com que a tabela não tenha linhas divisórias entre linhas e colunas*/
+/* Apply animation to this element 
+   -moz-animation: example5 5s linear infinite alternate;
+   -webkit-animation: example5 5s linear infinite alternate;
+   animation: example5 5s linear infinite alternate;
+}
+ Move it (define the animation) 
+@-moz-keyframes example5 {
+   0% {
+      -moz-transform: translateX(70%);
+   }
+   100% {
+      -moz-transform: translateX(0%);
+   }
+}
+@-webkit-keyframes example5 {
+   0% {
+      -webkit-transform: translateX(70%);
+   }
+   100% {
+      -webkit-transform: translateX(0%);
+   }
+}
+@keyframes example5 {
+   0% {
+      -moz-transform: translateX(70%); /* Firefox bug fix 
+      -webkit-transform: translateX(70%); /* Firefox bug fix 
+      transform: translateX(70%);
+   }
+   100% {
+      -moz-transform: translateX(0%); /* Firefox bug fix 
+      -webkit-transform: translateX(0%);Firefox bug fix 
+      transform: translateX(0%);
+   } */
+
 #retrospective_list table {
    flex-shrink: 0;
-   margin: 20px 0px 0px 400px;
+   margin: 90px 0px 0px 400px;
    color: var(--black);
    background-color: var(--white);
    border-radius: 12px;
@@ -542,27 +548,6 @@ consoante vão sendo adicionados*/
    width: 600px;
    border-collapse: collapse;
    overflow: hidden;
-}
-
-#retrospective_list {
-   max-height: 600px;
-   overflow-y: auto;
-   margin-top: 70px;
-}
-
-#retrospective_list::-webkit-scrollbar {
-   width: 11px;
-}
-
-#retrospective_list::-webkit-scrollbar-thumb {
-   background-color: rgb(159, 159, 159);
-   border-radius: 10px;
-}
-
-#retrospective_list::-webkit-scrollbar-track {
-   border-radius: 10px;
-   background-color: rgb(186, 186, 186);
-   margin-top: 60px;
 }
 
 #retrospective_list th,
@@ -719,16 +704,15 @@ th {
    margin-top: 41px;
 }
 
-/*border-collapse:separate faz com que haja uma separação entre linhas e colunas através de linhas*/
 #table_comments {
    width: 575px;
    background-color: var(--white_hover);
    border-spacing: 0px;
    border-collapse: separate;
+
    border-radius: 5px;
 }
 
-/*position: sticky faz com que os th não se movam quando usamos a scroll bar*/
 #table_comments th {
    border-bottom: 1px solid;
    background-color: var(--white_active);
@@ -854,7 +838,7 @@ th {
    margin-bottom: 2px;
 }
 
-/*/////////retro_form.html/////////////////*/
+/*/////////sprint_form.html/////////////////*/
 #listMembers {
    padding: 10px 0px 20px 30px;
    overflow-y: auto;
@@ -945,7 +929,6 @@ td {
    width: 12%;
 }
 
-/*align-items faz com que os elements sejam alinhados a partir da base dos elementos*/
 #footerForm {
    position: absolute;
    display: flex;
@@ -956,8 +939,6 @@ td {
    padding-bottom: 2%;
 }
 
-/*box-sizing: border box inclui os "borders" e os "paddings" para o tamanho total do elemento. 
-O que faz com que seja mais intuitivo o alinhamento deste elemento na página */
 .formStructure input,
 select,
 textarea {
@@ -971,8 +952,6 @@ label {
    margin-bottom: 8px;
    padding: 8px;
 }
-
-/*position:relative faz com que o alinhamento deste elemento seja relativo ao container em que está.*/
 #formId {
    position: relative;
    background-color: #fff;

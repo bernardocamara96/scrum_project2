@@ -48,9 +48,9 @@ for (let taskList of taskLists) {
       for (let task of tasks) {
          if (draggable.id == task.id) {
             task.column = this.id;
-            console.log(tasks);
          }
       }
+      console.log(tasks);
    });
 }
 
@@ -302,7 +302,10 @@ document.querySelector("#apply").addEventListener("click", function () {
       this.style.backgroundColor = color;
    });
 
-   saveColors(background_color, toDo_color, doing_color, done_color);
+   localStorage.setItem("background_color", background_color);
+   localStorage.setItem("toDo_color", toDo_color);
+   localStorage.setItem("doing_color", doing_color);
+   localStorage.setItem("done_color", done_color);
 
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
@@ -338,7 +341,10 @@ document.querySelector("#modal_cancel2").addEventListener("click", function () {
 document.querySelector("#reset_settings").addEventListener("click", function () {
    colorizeApp("#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
 
-   saveColors("#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
+   localStorage.setItem("background_color", "#172b4c");
+   localStorage.setItem("toDo_color", "#f1f2f4");
+   localStorage.setItem("doing_color", "#f1f2f4");
+   localStorage.setItem("done_color", "#f1f2f4");
 
    document.querySelector("#background_color").value = "#172b4c";
    document.querySelector("#toDo_color").value = "#f1f2f4";
@@ -375,13 +381,6 @@ function colorizeApp(backgroundColor, toDoColor, doingColor, doneColor) {
    document.querySelector("#column2 .title").style.color = fontColor(doingColor);
    document.querySelector("#column3 .title").style.color = fontColor(doneColor);
    document.querySelector("#btn_task").style.color = fontColor(toDoColor);
-}
-/*Função para guardar as cores em localStorage*/
-function saveColors(backgroundColor, toDoColor, doingColor, doneColor) {
-   localStorage.setItem("background_color", backgroundColor);
-   localStorage.setItem("toDo_color", toDoColor);
-   localStorage.setItem("doing_color", doingColor);
-   localStorage.setItem("done_color", doneColor);
 }
 
 /*Função para transformar uma cor Hex em RGB, com o qual é mais fácil fazer contas. Esta função existe apenas
