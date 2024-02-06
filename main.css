@@ -329,6 +329,14 @@ consoante vão sendo adicionados*/
    font-weight: bold;
 }
 
+#btn_task:hover {
+   background-color: var(--white_hover);
+}
+
+#btn_task:active {
+   background-color: var(--white_active);
+}
+
 #menu {
    display: flex;
    flex-direction: column;
