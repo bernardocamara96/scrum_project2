@@ -3,7 +3,6 @@ document.querySelector("#user").textContent = username;
 const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 const retros = JSON.parse(localStorage.getItem("retros")) || [];
 
-console.log(tasks);
 printTasks(tasks);
 
 writeDate();
