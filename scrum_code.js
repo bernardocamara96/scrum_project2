@@ -1,8 +1,9 @@
 const username = localStorage.getItem("username");
 document.querySelector("#user").textContent = username;
-const tasks = JSON.parse(localStorage.getItem("tasks"));
-const retros = JSON.parse(localStorage.getItem("retros"));
+const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+const retros = JSON.parse(localStorage.getItem("retros")) || [];
 
+console.log(tasks);
 printTasks(tasks);
 
 writeDate();
@@ -50,7 +51,6 @@ for (let taskList of taskLists) {
             task.column = this.id;
          }
       }
-      console.log(tasks);
    });
 }
 
@@ -128,7 +128,7 @@ function printTasks(tasks) {
       taskCreationAddEvents(task_div);
       task_div.setAttribute("draggable", "true");
       task_div.style.backgroundColor = tasks[i].color;
-      task_div.style.color = fontColor(tasks[i].color);
+      task_div.style.color = fontColorRGB(tasks[i].color);
 
       const task_title = document.createElement("div");
       task_title.classList.add("task_title");
@@ -138,14 +138,14 @@ function printTasks(tasks) {
       const task_btn = document.createElement("button");
       task_btn.innerHTML = "&#9998;";
       task_btn.classList.add("task_btn");
-      task_btn.style.color = fontColor(tasks[i].color);
+      task_btn.style.color = fontColorRGB(tasks[i].color);
 
       addEventsBeforeDrag(task_btn, task_div);
 
       const task_btnDelete = document.createElement("button");
       task_btnDelete.innerHTML = "&#128465;";
       task_btnDelete.classList.add("delete_btn");
-      task_btnDelete.style.color = fontColor(tasks[i].color);
+      task_btnDelete.style.color = fontColorRGB(tasks[i].color);
 
       addEventsBeforeDrag(task_btnDelete, task_div);
 
@@ -221,7 +221,7 @@ function addEventsBeforeDrag(btn, task_div) {
    btn.addEventListener("mouseenter", function () {
       for (let task of tasks) {
          if (task_div.id == task.id) {
-            const color = hexToRGB(task.color, -15, -15, -15);
+            const color = rgbColor(task.color, -15, -15, -15);
             btn.style.backgroundColor = color;
          }
       }
@@ -238,7 +238,7 @@ function addEventsBeforeDrag(btn, task_div) {
    btn.addEventListener("mousedown", function () {
       for (let task of tasks) {
          if (task_div.id == task.id) {
-            const color = hexToRGB(task.color, -30, -30, -30);
+            const color = rgbColor(task.color, -30, -30, -30);
             this.style.backgroundColor = color;
          }
       }

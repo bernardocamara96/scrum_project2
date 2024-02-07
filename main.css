@@ -44,7 +44,7 @@ footer {
    width: 240px;
    text-align: left;
    bottom: 0;
-   height: 120px;
+   height: 100px;
    font-size: 13px;
    margin-left: 12px;
 }
@@ -72,6 +72,7 @@ input {
    background-color: var(--white_hover);
    border: 0px;
    padding: 10px;
+   box-shadow: 0px 0px 2px 0px black;
 }
 
 input:focus {
@@ -137,11 +138,18 @@ textarea {
 
 .login_inputs {
    width: 93%;
-   box-shadow: 0px 0px 2px 0px black;
 }
 
 #login_inputs input[type="text"] {
    margin-bottom: 25px;
+}
+
+#login_main a {
+   position: fixed;
+   top: 58.5%;
+   left: 42%;
+   transform: translate(-50%, 0%);
+   color: var(--white);
 }
 
 /*/ /////////////////////////Janela principal Scrum///////////////////////////////////////*/
@@ -200,7 +208,7 @@ img {
    text-align: center;
    font-size: 16px;
    border-bottom: solid;
-   color: rgb(14, 14, 14);
+   color: var(--black);
    font-weight: bold;
    margin: 0px 30px 20px 30px;
    padding: 0px 50px;
@@ -823,14 +831,29 @@ th {
 #color_section {
    display: flex;
    flex-direction: row;
-   margin-top: 10px;
+   margin: 15px 0px 15px 7px;
+}
+.priority_div {
+   display: flex;
+   flex-direction: row;
+
+   margin: auto;
+   margin-right: 2px;
+}
+.priority_div label {
+   color: black;
+   font-size: 14px;
+   vertical-align: middle;
+   padding-left: 4px;
+   padding-bottom: 0px;
 }
 
-#task_color {
-   margin: 0px 0px 15px 10px;
-   padding: 5px;
-   height: 40px;
-   width: 274px;
+#priority_color {
+   height: 25px;
+   width: 25px;
+   border-radius: 50%;
+   border: solid var(--black) 2px;
+   margin: auto;
 }
 
 #cancel {
@@ -1053,4 +1076,53 @@ label {
 
 .edit_comment {
    width: 40px;
+}
+
+/*//////////////register.html////////////////////*/
+
+#form_register {
+   height: 430px;
+   width: 350px;
+   display: flex;
+   flex-direction: column;
+   top: 45%;
+   box-shadow: -50px 0px 30px 30px rgba(0, 0, 0, 0.4);
+}
+
+#form_register h2 {
+   margin-bottom: 30px;
+}
+
+#register_phone {
+   margin-bottom: 30px;
+}
+
+.register_elem {
+   margin-bottom: 12px;
+}
+
+#register_modal {
+   display: flex;
+   flex-direction: column;
+   height: 330px;
+   width: 300px;
+   align-items: center;
+}
+
+#register_photoLabel {
+   height: 10px;
+   width: 240px;
+}
+
+#register_photo {
+   height: 160px;
+   width: 160px;
+   margin: 30px auto;
+   border: solid 0.5px;
+   border-radius: 50%;
+}
+
+#register_confirmPhoto {
+   width: 261px;
+   margin-top: 15px;
 }

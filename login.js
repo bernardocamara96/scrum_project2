@@ -7,10 +7,10 @@ document.querySelector("#login_form").addEventListener("submit", function (e) {
    if (username_txt.length <= 13) {
       localStorage.setItem("username", username_txt);
       username.textContent = "";
-      const tasks = [];
+      /*const tasks = [];
       const retros = [];
       localStorage.setItem("tasks", JSON.stringify(tasks));
-      localStorage.setItem("retros", JSON.stringify(retros));
+      localStorage.setItem("retros", JSON.stringify(retros));*/
       window.location.href = "scrum.html";
    } else {
       alert("The Username inserted is too long, please enter a shorter username.");
