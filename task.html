@@ -32,8 +32,20 @@
             <textarea cols="30" rows="14" placeholder="Task Description" id="description"></textarea>
 
             <div id="color_section">
-               <label id="label_color">Task Color:</label>
-               <input type="color" id="task_color" />
+               <label id="label_color">Priority:</label>
+               <div class="priority_div">
+                  <input type="radio" name="priority" id="low_priority" value="100" checked />
+                  <label for="low_priority">Low</label>
+               </div>
+               <div class="priority_div">
+                  <input type="radio" name="priority" id="medium_priority" value="200" />
+                  <label for="medium_priority">Medium</label>
+               </div>
+               <div class="priority_div">
+                  <input type="radio" name="priority" id="high_priority" value="300" />
+                  <label for="high_priority">High</label>
+               </div>
+               <div id="priority_color"></div>
             </div>
 
             <div class="buttons">
@@ -48,8 +60,7 @@
          <div>Powered by:</div>
          <ul>
             <li>Bernardo Câmara</li>
-            <li>Cesar Temudo</li>
-            <li>Daniel Silva</li>
+            <li>Vânia Mendes</li>
          </ul>
          <br />
          <p>© Acertar o Rumo 2024</p>

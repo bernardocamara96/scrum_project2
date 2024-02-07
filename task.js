@@ -1,9 +1,11 @@
 const title_txt = document.querySelector("#title");
 const description_txt = document.querySelector("#description");
-const color_input = document.querySelector("#task_color");
 const tasks = JSON.parse(localStorage.getItem("tasks"));
 const task = JSON.parse(localStorage.getItem("task_object"));
 const index = localStorage.getItem("task_index");
+const priority_color = document.querySelector("#priority_color");
+const priority_array = document.querySelectorAll("#color_section input");
+var priority_checked = 100;
 
 document.querySelector("#body_color").style.backgroundColor = localStorage.getItem("background_color");
 
@@ -20,15 +22,25 @@ de delete não é mostrado e o título da forma é Task Creation*/
 if (task.title != "") {
    title_txt.value = task.title;
    description_txt.value = task.description;
-   color_input.value = task.color;
    document.querySelector("#task_save").style.width = "46%";
    document.querySelector("#task_delete").style.display = "inline-block";
    document.querySelector("#task_creationTitle").textContent = "Task Edit";
+   if (task.priority == 100) {
+      priority_array[0].checked = true;
+      priority_color.style.backgroundColor = "#1eaa28";
+   } else if (task.priority == 200) {
+      priority_array[1].checked = true;
+      priority_color.style.backgroundColor = "#fbff00";
+   } else if (task.priority == 300) {
+      priority_array[2].checked = true;
+      priority_color.style.backgroundColor = "#e70000";
+   }
 } else {
-   color_input.value = "#ffffff";
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
    document.querySelector("#task_creationTitle").textContent = "Task Creation";
+   priority_color.style.backgroundColor = "#1eaa28";
+   priority_array[0].checked = true;
 }
 
 /*Só é possível gravar a tarefa se esta contiver algum título. Caso o campo do título tenha algo escrito
@@ -38,13 +50,21 @@ document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
       if (task.title == "") {
          const data = new Date();
+         for (let i = 0; i < priority_array.length; i++) {
+            if (priority_array[i].checked) {
+               priority_checked = priority_array[i].value;
+            }
+         }
+
          const task = {
             id: data.getTime(),
             column: "list1",
             title: title_txt.value,
             description: description_txt.value,
-            color: color_input.value,
+            priority: priority_checked,
+            color: priority_color.style.backgroundColor,
          };
+
          tasks.push(task);
          localStorage.setItem("tasks", JSON.stringify(tasks));
          window.location.href = "scrum.html";
@@ -52,7 +72,13 @@ document.querySelector("#task_save").addEventListener("click", function () {
          if (confirmEdit()) {
             tasks[index].title = title_txt.value;
             tasks[index].description = description_txt.value;
-            tasks[index].color = color_input.value;
+            for (let i = 0; i < priority_array.length; i++) {
+               if (priority_array[i].checked) {
+                  priority_checked = priority_array[i].value;
+               }
+            }
+            tasks[index].priority = priority_checked;
+            tasks[index].color = priority_color.style.backgroundColor;
             localStorage.setItem("tasks", JSON.stringify(tasks));
             window.location.href = "scrum.html";
          }
@@ -62,6 +88,25 @@ document.querySelector("#task_save").addEventListener("click", function () {
    }
 });
 
+for (let i = 0; i < priority_array.length; i++) {
+   if (i == 0) {
+      priority_array[i].addEventListener("click", function () {
+         priority_color.style.backgroundColor = "#1eaa28";
+
+         console.log(priority_array[i].value);
+      });
+   } else if (i == 1) {
+      priority_array[i].addEventListener("click", function () {
+         priority_color.style.backgroundColor = "#fbff00";
+         console.log(priority_array[i].value);
+      });
+   } else if (i == 2) {
+      priority_array[i].addEventListener("click", function () {
+         priority_color.style.backgroundColor = "#e70000";
+         console.log(priority_array[i].value);
+      });
+   }
+}
 /*Botão para eliminar a tarefa, usando o método splice, que tem como argumentos de entrada o índice a partir do
 qual queremos eliminar e quantos elementos queremos eliminar, neste caso vamos buscar o índice da tarefa a 
 ser eliminada e como é apenas essa o segundo parâmetro é 1*/
