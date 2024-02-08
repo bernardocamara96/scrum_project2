@@ -158,3 +158,33 @@ function writeDate() {
    // Insere no HTML
    document.getElementById("date").innerHTML = dateTimeString;
 }
+
+
+async function addTask(form){ 
+   let task = { 
+       'id' : '0', 
+       'title' : document.getElementById("title").value,
+       'description': document.getElementById("description")
+   }; 
+   console.log(task); 
+
+   await fetch('http://localhost:8080/project_backend/rest/task/add', 
+   { 
+       method: 'POST', 
+       headers:  
+       { 
+           'Accept': '*/*', 
+           'Content-Type': 'application/json' 
+       }, 
+       body: JSON.stringify(task) 
+           
+     } 
+     ).then(function (response) { 
+       if (response.status == 200) { 
+         alert('activity is added successfully :)'); 
+         addTask(task); 
+       } else { 
+         alert('something went wrong :('); 
+       } 
+   }); 
+} 
