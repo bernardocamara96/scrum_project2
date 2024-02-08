@@ -18,7 +18,7 @@ import jakarta.ws.rs.Path;
 
 import java.util.List;
 
-@Path("/task")
+@Path("/tasks")
 public class TaskService {
 
     @Inject
@@ -26,7 +26,7 @@ public class TaskService {
 
 
     @GET
-    @Path("/all")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Task> getTasks() {return taskBean.getTasks();
     }
@@ -55,9 +55,9 @@ public class TaskService {
 
 
     @DELETE
-    @Path("/delete")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTask(@QueryParam("id")int id) {
+    public Response removeTask(@PathParam("id") int id) {
         boolean deleted = taskBean.removeTask(id);
         if (!deleted)
             return Response.status(406).entity("Task with this id is not found").build();
@@ -67,9 +67,9 @@ public class TaskService {
 
 
     @PUT
-    @Path("/update")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(Task a, @HeaderParam("id") int id) {
+    public Response updateTask(Task a, @PathParam("id") int id) {
         boolean updated = taskBean.updateTask(id, a);
 
         if (!updated)
