@@ -1,5 +1,9 @@
+
+
+const user = localStorage.getItem("username");
+
 // Verifica se o nome de usuário está armazenado no localStorage
-if(localStorage.getItem("user")) {
+if(user!== null) {
     // Obtém o nome de usuário armazenado no localStorage
     var username = localStorage.getItem("username");
     // Exibe o nome de usuário no elemento HTML com id "username"
