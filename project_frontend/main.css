@@ -140,6 +140,7 @@ textarea {
 
 .login_inputs {
    width: 93%;
+   box-shadow: var(--text_shadow);
 }
 
 #login_inputs input[type="text"] {
