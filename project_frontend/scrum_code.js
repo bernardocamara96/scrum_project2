@@ -1,4 +1,4 @@
-const username = localStorage.getItem("username");
+const username = sessionStorage.getItem("username");
 document.querySelector("#user").textContent = username;
 const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 const retros = JSON.parse(localStorage.getItem("retros")) || [];
@@ -21,7 +21,6 @@ document.querySelector("#logout").addEventListener("click", function () {
 document.querySelector("#btn_edit").addEventListener("click", function () {
    window.location.href = "edit_profile.html";
 });
-
 
 document.querySelector("#btn_sprint").addEventListener("click", function () {
    window.location.href = "retrospective.html";

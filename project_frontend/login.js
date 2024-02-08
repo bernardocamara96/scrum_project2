@@ -1,18 +1,32 @@
 document.querySelector("#login_form").addEventListener("submit", function (e) {
    e.preventDefault();
-   const username = document.querySelector("#username");
-   var username_txt = username.value;
-   /*Se o username inserido tiver 13 ou menos caracteres é gravado em localStorage, e são inicializadas as arrays das tasks e das retros
-   que também são guardadas em localStorage, e o user é direcionado para a página scrum.html*/
-   if (username_txt.length <= 13) {
-      localStorage.setItem("username", username_txt);
-      username.textContent = "";
-      /*const tasks = [];
-      const retros = [];
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      localStorage.setItem("retros", JSON.stringify(retros));*/
-      window.location.href = "scrum.html";
-   } else {
-      alert("The Username inserted is too long, please enter a shorter username.");
+
+   let username_txt = document.querySelector("#username").value;
+   let pass_txt = document.querySelector("#password").value;
+   validateUser(username_txt, pass_txt);
+
+   async function validateUser(username, password) {
+      await fetch(
+         "http://localhost:8080/project_backend/rest/users/login",
+
+         {
+            method: "GET",
+            headers: {
+               Accept: "*/*",
+               "Content-Type": "application/json",
+               username: username,
+               password: password,
+            },
+         }
+      ).then(function (response) {
+         if (response.status == 200) {
+            sessionStorage.setItem("username", username);
+            window.location.href = "scrum.html";
+         } else if (response.status == 404) {
+            alert("Wrong data");
+         } else {
+            alert("something went wrong :(");
+         }
+      });
    }
 });
