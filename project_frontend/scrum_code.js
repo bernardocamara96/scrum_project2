@@ -16,6 +16,13 @@ document.querySelector("#logout").addEventListener("click", function () {
    window.location.href = "login.html";
 });
 
+//Event Listenner para o botao EditProfile
+
+document.querySelector("#btn_edit").addEventListener("click", function () {
+   window.location.href = "edit_profile.html";
+});
+
+
 document.querySelector("#btn_sprint").addEventListener("click", function () {
    window.location.href = "retrospective.html";
 });
