@@ -1,5 +1,4 @@
 
-
 const user = localStorage.getItem("username");
 
 // Verifica se o nome de usuário está armazenado no localStorage
