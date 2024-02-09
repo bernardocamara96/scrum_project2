@@ -11,3 +11,8 @@ if(user!== null) {
     // Caso o nome de usuário não esteja armazenado, exibe uma mensagem padrão
     document.getElementById("username").textContent = "Username not found";
 }
+
+//action Listenner para o botao Cancel
+document.querySelector("#btn_cancel").addEventListener("click", function () {
+    window.location.href = "scrum.html";
+ });
