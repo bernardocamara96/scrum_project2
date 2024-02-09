@@ -1,9 +1,25 @@
 const username = sessionStorage.getItem("username");
-document.querySelector("#user").textContent = username;
+const firstName_txt = document.querySelector("#user");
 const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 const retros = JSON.parse(localStorage.getItem("retros")) || [];
+const user_img = document.querySelector("#user_img");
+const column1 = document.querySelector("#column1");
+const column2 = document.querySelector("#column2");
+const column3 = document.querySelector("#column3");
+const backgroundScrum = document.querySelector("#background");
+let user = null;
 
-console.log(tasks);
+getUser(username).then((result) => {
+   console.log(result);
+   user = result;
+   firstName_txt.textContent = user.firstName;
+   user_img.src = user.imgURL;
+   backgroundScrum.style.backgroundColor = user.background_color;
+   column1.style.backgroundColor = user.toDo_color;
+   column2.style.backgroundColor = user.doing_color;
+   column3.style.backgroundColor = user.done_color;
+});
+
 printTasks(tasks);
 
 writeDate();
@@ -262,6 +278,25 @@ function writeDate() {
 
    // Insere no HTML
    document.getElementById("date").innerHTML = dateTimeString;
+}
+
+async function getUser(username) {
+   let response = await fetch(
+      "http://localhost:8080/project_backend/rest/users",
+
+      {
+         method: "GET",
+         headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            username: username,
+         },
+      }
+   );
+
+   let user1 = await response.json();
+   console.log(user1);
+   return user1;
 }
 
 //////CORES///////////////////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@
    --white_hover: rgb(230, 230, 230);
    --white_active: rgb(217, 217, 217);
    --text_shadow: 0px 0px 2px 0px black;
-   --blue:rgb(23,43,76);
+   --blue: rgb(23, 43, 76);
 }
 
 * {
@@ -114,6 +114,9 @@ textarea {
 #user_img {
    transform: translate(0%, -40%);
    top: 50%;
+   border-radius: 50%;
+   height: 50px;
+   width: 50px;
 }
 
 #scrum_img {
@@ -183,8 +186,10 @@ img {
 }
 
 #user {
+   position: absolute;
    margin-left: 8px;
    font-size: 15px;
+   transform: translate(0%, 120%);
 }
 #user_name {
    background-color: var(--white_hover);
@@ -874,6 +879,10 @@ th {
    margin-bottom: 2px;
 }
 
+#color_section input {
+   box-shadow: 0px 0px 0px 0px black;
+}
+
 /*/////////sprint_form.html/////////////////*/
 #listMembers {
    padding: 10px 0px 20px 30px;
@@ -1141,41 +1150,39 @@ label {
 }
 
 /* Pagina Edit Profile */
-.edit_container{
-   display:flex;
+.edit_container {
+   display: flex;
    flex-direction: column;
    align-items: center;
    position: absolute;
-   top:50%;
+   top: 50%;
    left: 60%;
    transform: translate(-50%, -50%);
-   
 }
 .edit_photo,
 .edit_profile,
 .confirm_profile,
 .form_edit {
-   margin:5px;
-   padding:15px;
+   margin: 5px;
+   padding: 15px;
    width: 700px;
    background-color: var(--white);
    border-radius: 10px;
 }
-.confirm_profile{
+.confirm_profile {
    background-color: var(--blue);
 }
-.btn_save{
+.btn_save {
    background-color: var(--white);
    height: 50px;
    width: 100px;
    text-align: center;
-
 }
-.change_photo{
+.change_photo {
    align-items: center;
    position: right;
 }
-.edit_photo{
+.edit_photo {
    display: flex;
    justify-content: space-between;
    align-items: center;
@@ -1185,7 +1192,7 @@ label {
    width: 100px;
 }
 .edit_profile input[type="text"] {
-   width: 300px; 
+   width: 300px;
    padding: 10px;
-   margin:10px;
+   margin: 10px;
 }
