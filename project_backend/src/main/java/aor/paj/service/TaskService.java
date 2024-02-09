@@ -45,7 +45,7 @@ public class TaskService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTask(@PathParam("id")int id) {
-        Task task = taskBean.getTask(id);
+        Task task = taskBean.getTasks().get(id);
         if (task==null)
             return Response.status(406).entity("Task with this id is not found").build();
 
