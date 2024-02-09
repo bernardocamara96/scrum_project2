@@ -20,6 +20,10 @@ document.querySelector("#register_submit").addEventListener("click", function (e
       firstName: firstName.value,
       lastName: lastName.value,
       phoneNumber: phone.value,
+      toDo_color: "#f1f2f4",
+      doing_color: "#f1f2f4",
+      done_color: "#f1f2f4",
+      background_color: "#172b4c",
       imgURL: null,
    };
    validateUser(user);
