@@ -2,6 +2,7 @@ package aor.paj.dto;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 @XmlRootElement
 public class User {
     @XmlElement
@@ -46,7 +47,7 @@ public class User {
         this.background_color=null;
     }
     public User(String username, String password, String email, String firstName, String lastName, String phoneNumber,
-                String imgURL, String toDo_color, String doing_color,String done_color, String background_color) {
+                String imgURL, String toDo_color, String doing_color, String done_color, String background_color) {
         this.username = username;
         this.password = password;
         this.email = email;

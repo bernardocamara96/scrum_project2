@@ -1,15 +1,16 @@
 package aor.paj.bean;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.util.ArrayList;
 
 import aor.paj.dto.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.util.ArrayList;
 
 @ApplicationScoped
 public class UserBean {
@@ -47,14 +48,36 @@ public class UserBean {
         }
         return userRequested;
     }
-    public boolean validateUserRegister(String username, String email, String phoneNumber){
-        for (User user: users){
-            System.out.println(user.getUsername());
-            if(user.getUsername().equals(username) || user.getEmail().equals(email) || user.getPhoneNumber().equals(phoneNumber)) {
-                return false;
+    public int validateUserRegister(String username,String password, String email, String firstName,
+                                        String lastName, String phoneNumber){
+
+
+        int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2, USER_VALIDATE=3;
+        int VALIDATION_STATE=USER_VALIDATE;
+
+        if(username.equals("") || password.equals("") || email.equals("") || firstName.equals("") || lastName.equals("") || phoneNumber.equals("")) {
+
+            VALIDATION_STATE= EMPTY_FIELDS;
+        }
+        else {
+            for (User user: users) {
+
+                if (user.getUsername().equals(username)){
+                    VALIDATION_STATE= USERNAME_EXISTS;
+                }
+                else if (user.getEmail().equals(email)){
+                    VALIDATION_STATE= EMAIL_EXISTS;
+                }
             }
         }
-        return true;
+        return VALIDATION_STATE;
+    }
+
+    public void saveColors(User user,String background_color,String toDo_color, String doing_color, String done_color){
+        user.setBackground_color(background_color);
+        user.setToDo_color(toDo_color);
+        user.setDoing_color(doing_color);
+        user.setDone_color(done_color);
     }
 
     public User validateLogin(String username, String password) {

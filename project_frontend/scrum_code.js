@@ -10,14 +10,15 @@ const backgroundScrum = document.querySelector("#background");
 let user = null;
 
 getUser(username).then((result) => {
-   console.log(result);
    user = result;
    firstName_txt.textContent = user.firstName;
    user_img.src = user.imgURL;
-   backgroundScrum.style.backgroundColor = user.background_color;
-   column1.style.backgroundColor = user.toDo_color;
-   column2.style.backgroundColor = user.doing_color;
-   column3.style.backgroundColor = user.done_color;
+   //Vai colorir a aplicação com as cores anteriormente guardadas em localStorage
+   colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
+   document.querySelector("#background_color").value = user.background_color;
+   document.querySelector("#toDo_color").value = user.toDo_color;
+   document.querySelector("#doing_color").value = user.doing_color;
+   document.querySelector("#done_color").value = user.done_color;
 });
 
 printTasks(tasks);
@@ -303,19 +304,6 @@ async function getUser(username) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Vai colorir a aplicação com as cores anteriormente guardadas em localStorage
-colorizeApp(
-   localStorage.getItem("background_color") || "#172b4c",
-   localStorage.getItem("toDo_color") || "#f1f2f4",
-   localStorage.getItem("doing_color") || "#f1f2f4",
-   localStorage.getItem("done_color") || "#f1f2f4"
-);
-
-document.querySelector("#background_color").value = localStorage.getItem("background_color") || "#172b4c";
-document.querySelector("#toDo_color").value = localStorage.getItem("toDo_color") || "#f1f2f4";
-document.querySelector("#doing_color").value = localStorage.getItem("doing_color") || "#f1f2f4";
-document.querySelector("#done_color").value = localStorage.getItem("done_color") || "#f1f2f4";
-
 /*Evento de click no botão apply que vai buscar as cores escolhidas pelo utilizador e vai aplicar à aplicação.
 Estas cores ficam guardadas em localStorage para quando o utilizador mudar de página as cores se manterem*/
 
@@ -325,47 +313,10 @@ document.querySelector("#apply").addEventListener("click", function () {
    const doing_color = document.querySelector("#doing_color").value;
    const done_color = document.querySelector("#done_color").value;
 
-   colorizeApp(background_color, toDo_color, doing_color, done_color);
-
-   document.querySelector("#btn_task").addEventListener("mouseenter", function () {
-      const color = hexToRGB(toDo_color, -15, -15, -15);
-
-      this.style.backgroundColor = color;
-   });
-
-   document.querySelector("#btn_task").addEventListener("mouseleave", function () {
-      this.style.backgroundColor = toDo_color;
-   });
-
-   document.querySelector("#btn_task").addEventListener("mousedown", function () {
-      color = hexToRGB(toDo_color, -30, -30, -30);
-
-      this.style.backgroundColor = color;
-   });
-
-   localStorage.setItem("background_color", background_color);
-   localStorage.setItem("toDo_color", toDo_color);
-   localStorage.setItem("doing_color", doing_color);
-   localStorage.setItem("done_color", done_color);
+   saveColors(username, background_color, toDo_color, doing_color, done_color);
 
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
-});
-
-document.querySelector("#btn_task").addEventListener("mouseenter", function () {
-   const color = hexToRGB(localStorage.getItem("toDo_color"), -15, -15, -15);
-
-   this.style.backgroundColor = color;
-});
-
-document.querySelector("#btn_task").addEventListener("mouseleave", function () {
-   this.style.backgroundColor = localStorage.getItem("toDo_color");
-});
-
-document.querySelector("#btn_task").addEventListener("mousedown", function () {
-   const color = hexToRGB(localStorage.getItem("toDo_color"), -30, -30, -30);
-
-   this.style.backgroundColor = color;
 });
 
 document.querySelector("#cancel_settings").addEventListener("click", function () {
@@ -380,29 +331,7 @@ document.querySelector("#modal_cancel2").addEventListener("click", function () {
 
 //Este evento ao ser acionado muda todas as cores da aplicação para as cores originais desta
 document.querySelector("#reset_settings").addEventListener("click", function () {
-   colorizeApp("#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
-
-   localStorage.setItem("background_color", "#172b4c");
-   localStorage.setItem("toDo_color", "#f1f2f4");
-   localStorage.setItem("doing_color", "#f1f2f4");
-   localStorage.setItem("done_color", "#f1f2f4");
-
-   document.querySelector("#background_color").value = "#172b4c";
-   document.querySelector("#toDo_color").value = "#f1f2f4";
-   document.querySelector("#doing_color").value = "#f1f2f4";
-   document.querySelector("#done_color").value = "#f1f2f4";
-
-   document.querySelector("#btn_task").addEventListener("mouseenter", function () {
-      this.style.backgroundColor = "#dddddd";
-   });
-
-   document.querySelector("#btn_task").addEventListener("mouseleave", function () {
-      this.style.backgroundColor = "#f1f2f4";
-   });
-
-   document.querySelector("#btn_task").addEventListener("mousedown", function () {
-      this.style.backgroundColor = "#c8c8c8";
-   });
+   saveColors(username, "#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
 
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
@@ -422,8 +351,45 @@ function colorizeApp(backgroundColor, toDoColor, doingColor, doneColor) {
    document.querySelector("#column2 .title").style.color = fontColor(doingColor);
    document.querySelector("#column3 .title").style.color = fontColor(doneColor);
    document.querySelector("#btn_task").style.color = fontColor(toDoColor);
+
+   document.querySelector("#btn_task").addEventListener("mouseenter", function () {
+      let color = hexToRGB(toDoColor, -15, -15, -15);
+
+      this.style.backgroundColor = color;
+   });
+
+   document.querySelector("#btn_task").addEventListener("mouseleave", function () {
+      this.style.backgroundColor = toDoColor;
+   });
+
+   document.querySelector("#btn_task").addEventListener("mousedown", function () {
+      let color = hexToRGB(toDoColor, -30, -30, -30);
+
+      this.style.backgroundColor = color;
+   });
 }
 
+async function saveColors(username, background_color, toDo_color, doing_color, done_color) {
+   await fetch("http://localhost:8080/project_backend/rest/users", {
+      method: "PUT",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         background_color: background_color,
+         toDo_color: toDo_color,
+         doing_color: doing_color,
+         done_color: done_color,
+      },
+   }).then(function (response) {
+      if (response.status == 404) {
+         alert("You don't have authorization to make changes");
+      } else if (response.status == 200) {
+         colorizeApp(background_color, toDo_color, doing_color, done_color);
+         alert("Colors were updated");
+      } else alert("Something went wrong");
+   });
+}
 /*Função para transformar uma cor Hex em RGB, com o qual é mais fácil fazer contas. Esta função existe apenas
 porque as cores em hover e active dos butões são calculadas a partir da cor original destes. 
 Apenas aceita cores em formato hexadecimal*/
