@@ -1122,7 +1122,7 @@ label {
    box-shadow: 0px 0px 0px 0px black;
 }
 
-#register_modal {
+#register_modal, #edit_modal {
    display: flex;
    flex-direction: column;
    height: 330px;
@@ -1136,7 +1136,7 @@ label {
    box-shadow: var(--text_shadow);
 }
 
-#register_photo {
+#register_photo, #edit_photo {
    height: 160px;
    width: 160px;
    margin: 30px auto;
@@ -1144,7 +1144,7 @@ label {
    border-radius: 50%;
 }
 
-#register_confirmPhoto {
+#register_confirmPhoto, #edit_confirmPhoto, #edit_cancelPhoto {
    width: 261px;
    margin-top: 15px;
 }
@@ -1172,7 +1172,7 @@ label {
 .confirm_profile {
    background-color: var(--blue);
 }
-.btn_save {
+.btn_save, .btn_cancel {
    background-color: var(--white);
    height: 50px;
    width: 100px;

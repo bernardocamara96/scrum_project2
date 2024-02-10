@@ -16,7 +16,7 @@
 
       <div class="edit_container">
         <div class="edit_photo">
-        <img src="user.png" id="user_photo" alt="User photo">
+        <img src="user_photo" id="user_photo" alt="User photo">
         <p id="username"></p>
         <button class="change_photo" id="change_photo">Change photo</button>
         </div>
@@ -30,8 +30,16 @@
     </div>
     <div class="confirm_profile">
         <button class="btn_save" id="btn_save">Save</button>
-        <button class="btn_save" id="btn_cancel">Cancel</button>
+        <button class="btn_cancel" id="btn_cancel">Cancel</button>
     </div>
+    </div>
+    <div id="background"></div>
+   
+    <div class="modal" id="edit_modal">
+      <img src="user.png" alt="User photo" id="edit_photo" />
+      <input type="text" placeholder="Photo URL" id="edit_photoLabel" />
+      <button id="edit_confirmPhoto">Confirm</button>
+      <button id="edit_calcelPhoto">Cancel</button>
     </div>
       <footer>
          <div>Powered by:</div>
