@@ -2,30 +2,61 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @XmlRootElement
 public class Task {
     @XmlElement
-    int id;
+    private int id;
     @XmlElement
-    String title;
+    private String title;
     @XmlElement
-    String description;
+    private String description;
     @XmlElement
-    Date inicialDate;
+    private LocalDate inicialDate;
     @XmlElement
-    Date finalDate;
+    private LocalDate finalDate;
+    @XmlElement
+    private int priority;
+    @XmlElement
+    private int state;
 
     public Task() {
+        this.id = 0;
+        this.title = null;
+        this.description = null;
+        this.inicialDate = null;
+        this.finalDate = null;
+        this.priority=0;
+        this.state=0;
     }
 
-    public Task(int id, String title, String description, Date inicialDate, Date finalDate) {
+    public Task(int id, String title, String description, LocalDate inicialDate, LocalDate finalDate, int priority, int state) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.inicialDate = inicialDate;
         this.finalDate = finalDate;
+        this.priority=priority;
+        this.state=state;
+    }
+
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public int getId() {
@@ -52,19 +83,19 @@ public class Task {
         this.description = description;
     }
 
-    public Date getInicialDate() {
+    public LocalDate getInicialDate() {
         return inicialDate;
     }
 
-    public void setInicialDate(Date inicialDate) {
+    public void setInicialDate(LocalDate inicialDate) {
         this.inicialDate = inicialDate;
     }
 
-    public Date getFinalDate() {
+    public LocalDate getFinalDate() {
         return finalDate;
     }
 
-    public void setFinalDate(Date finalDate) {
+    public void setFinalDate(LocalDate finalDate) {
         this.finalDate = finalDate;
     }
 }

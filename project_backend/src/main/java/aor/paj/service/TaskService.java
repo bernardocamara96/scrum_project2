@@ -1,27 +1,24 @@
 package aor.paj.service;
 
 import aor.paj.bean.TaskBean;
+import aor.paj.bean.UserBean;
 import aor.paj.dto.Task;
+import aor.paj.dto.User;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.Path;
 
 import java.util.List;
 
 @Path("/tasks")
-public class TaskService1 {
+public class TaskService {
 
     @Inject
     TaskBean taskBean;
 
+    @Inject
+    UserBean userBean;
 
     @GET
     @Path("/")
@@ -29,6 +26,15 @@ public class TaskService1 {
     public List<Task> getTasks() {return taskBean.getTasks();
     }
 
+    @POST
+    @Path("/create")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTask(@HeaderParam("username")String username, Task task){
+        User userRequested=userBean.getUser(username);
+        userBean.addTask(userRequested,task);
+        taskBean.addTask(task);
+        return Response.status(200).entity("Task created").build();
+    }
 
     @POST
     @Path("/add")

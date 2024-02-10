@@ -34,11 +34,17 @@ public class TaskBean {
     }
     public void addTask(Task a) {
         tasks.add(a);
-        writeIntoJsonFile();
-
     }
 
-
+    public Task getTask(int id){
+        Task taskRequested=null;
+        for (int i=0;i<tasks.size() && taskRequested==null;i++){
+            if (tasks.get(i).getId()==id){
+                taskRequested=tasks.get(i);
+            }
+        }
+        return taskRequested;
+    }
     public ArrayList<Task> getTasks() {
         return tasks;
     }

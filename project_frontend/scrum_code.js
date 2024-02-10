@@ -13,7 +13,6 @@ getUser(username).then((result) => {
    user = result;
    firstName_txt.textContent = user.firstName;
    user_img.src = user.imgURL;
-   //Vai colorir a aplicação com as cores anteriormente guardadas em localStorage
    colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
    document.querySelector("#background_color").value = user.background_color;
    document.querySelector("#toDo_color").value = user.toDo_color;
@@ -47,12 +46,7 @@ document.querySelector("#btn_sprint").addEventListener("click", function () {
 na página task-html. Nessa página há uma condição que ao verificar que a task não tem título 
 vai ser apresentada a form de criação e não a de edição */
 document.querySelector("#btn_task").addEventListener("click", function () {
-   localStorage.setItem("tasks", JSON.stringify(tasks));
-   const task = {
-      title: "",
-      description: "",
-   };
-   localStorage.setItem("task_object", JSON.stringify(task));
+   sessionStorage.setItem("taskType", "create");
    window.location.href = "task.html";
 });
 
@@ -112,8 +106,8 @@ for (let btn of buttons) {
    btn.addEventListener("click", function () {
       for (let i = 0; i < tasks.length; i++) {
          if (tasks[i].id == this.parentNode.id) {
-            localStorage.setItem("task_index", i);
-            localStorage.setItem("task_object", JSON.stringify(tasks[i]));
+            sessionStorage.setItem("taskType", "edit");
+            sessionStorage.setItem("task_object", JSON.stringify(tasks[i]));
             setTimeout(() => {
                i = tasks.length;
             }, 0);
@@ -296,7 +290,6 @@ async function getUser(username) {
    );
 
    let user1 = await response.json();
-   console.log(user1);
    return user1;
 }
 

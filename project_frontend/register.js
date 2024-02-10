@@ -10,9 +10,8 @@ const lastName = document.querySelector("#register_lastName");
 const phone = document.querySelector("#register_phone");
 const form1 = document.querySelector("#form_register");
 
-document.querySelector("#register_submit").addEventListener("click", function (e) {
+form1.addEventListener("submit", function (e) {
    e.preventDefault();
-
    validateUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value);
 });
 
@@ -25,6 +24,7 @@ document.querySelector("#register_confirmPhoto").addEventListener("click", funct
       lastName: lastName.value,
       phoneNumber: phone.value,
       imgURL: photo.src,
+      tasks: [],
       toDo_color: "#f1f2f4",
       doing_color: "#f1f2f4",
       done_color: "#f1f2f4",
@@ -40,8 +40,19 @@ background.addEventListener("click", function () {
 });
 
 photo_label.addEventListener("change", function () {
-   photo.src = photo_label.value;
+   if (isValidURL(photo_label.value)) {
+      photo.src = photo_label.value;
+   }
 });
+
+function isValidURL(url) {
+   try {
+      new URL(url);
+      return true;
+   } catch {
+      return false;
+   }
+}
 
 async function validateUser(username_txt, password_txt, email_txt, firstName_txt, lastName_txt, phoneNumber_txt) {
    await fetch(

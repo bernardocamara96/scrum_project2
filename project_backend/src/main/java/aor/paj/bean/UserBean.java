@@ -1,5 +1,6 @@
 package aor.paj.bean;
 
+import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -35,7 +36,11 @@ public class UserBean {
     public void addUser(User user) {
         users.add(user);
         writeIntoJsonFile();
+    }
 
+    public void addTask(User user, Task task){
+        user.addTask(task);
+        writeIntoJsonFile();
     }
 
 
@@ -48,11 +53,9 @@ public class UserBean {
         }
         return userRequested;
     }
-    public int validateUserRegister(String username,String password, String email, String firstName,
-                                        String lastName, String phoneNumber){
+    public int validateUserRegister(String username,String password, String email, String firstName, String lastName, String phoneNumber){
 
-
-        int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2, USER_VALIDATE=3;
+        final int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2,USER_VALIDATE=3;
         int VALIDATION_STATE=USER_VALIDATE;
 
         if(username.equals("") || password.equals("") || email.equals("") || firstName.equals("") || lastName.equals("") || phoneNumber.equals("")) {
@@ -60,12 +63,13 @@ public class UserBean {
             VALIDATION_STATE= EMPTY_FIELDS;
         }
         else {
-            for (User user: users) {
 
-                if (user.getUsername().equals(username)){
+            for (int i=0;i<users.size() && VALIDATION_STATE!=USERNAME_EXISTS && VALIDATION_STATE!=EMAIL_EXISTS;i++) {
+
+                if (users.get(i).getUsername().equals(username)){
                     VALIDATION_STATE= USERNAME_EXISTS;
                 }
-                else if (user.getEmail().equals(email)){
+                else if (users.get(i).getEmail().equals(email)){
                     VALIDATION_STATE= EMAIL_EXISTS;
                 }
             }
@@ -103,18 +107,6 @@ public class UserBean {
         }
         return false;
     }
-
-    /*public boolean updateActivity(int id, Activity activity) {
-        for (Activity a : activities) {
-            if (a.getId() == id) {
-                a.setTitle(activity.getTitle());
-                a.setDescription(activity.getDescription());
-                writeIntoJsonFile();
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     private void writeIntoJsonFile(){
         try {

@@ -1,15 +1,11 @@
 const title_txt = document.querySelector("#title");
 const description_txt = document.querySelector("#description");
 const tasks = JSON.parse(localStorage.getItem("tasks"));
-const task = JSON.parse(localStorage.getItem("task_object"));
 const index = localStorage.getItem("task_index");
 const priority_color = document.querySelector("#priority_color");
 const priority_array = document.querySelectorAll("#color_section input");
+const task_type = sessionStorage.getItem("taskType");
 var priority_checked = 100;
-
-document.querySelector("#body_color").style.backgroundColor = localStorage.getItem("background_color");
-
-document.querySelector("#user").textContent = localStorage.getItem("username");
 
 writeDate();
 
@@ -19,22 +15,7 @@ setInterval(writeDate, 1000);
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
 é mostrado o botão de delete e o título da form é Task Edit, caso contrário os campos são deixados sem nada, o botão 
 de delete não é mostrado e o título da forma é Task Creation*/
-if (task.title != "") {
-   title_txt.value = task.title;
-   description_txt.value = task.description;
-   document.querySelector("#task_save").style.width = "46%";
-   document.querySelector("#task_delete").style.display = "inline-block";
-   document.querySelector("#task_creationTitle").textContent = "Task Edit";
-   if (task.priority == 100) {
-      priority_array[0].checked = true;
-      priority_color.style.backgroundColor = "#1eaa28";
-   } else if (task.priority == 200) {
-      priority_array[1].checked = true;
-      priority_color.style.backgroundColor = "#fbff00";
-   } else if (task.priority == 300) {
-      priority_array[2].checked = true;
-      priority_color.style.backgroundColor = "#e70000";
-   }
+if (task_type == "edit") {
 } else {
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
@@ -159,32 +140,27 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
+async function addTask(form) {
+   let task = {
+      id: "0",
+      title: document.getElementById("title").value,
+      description: document.getElementById("description"),
+   };
+   console.log(task);
 
-async function addTask(form){ 
-   let task = { 
-       'id' : '0', 
-       'title' : document.getElementById("title").value,
-       'description': document.getElementById("description")
-   }; 
-   console.log(task); 
-
-   await fetch('http://localhost:8080/project_backend/rest/task/add', 
-   { 
-       method: 'POST', 
-       headers:  
-       { 
-           'Accept': '*/*', 
-           'Content-Type': 'application/json' 
-       }, 
-       body: JSON.stringify(task) 
-           
-     } 
-     ).then(function (response) { 
-       if (response.status == 200) { 
-         alert('activity is added successfully :)'); 
-         addTask(task); 
-       } else { 
-         alert('something went wrong :('); 
-       } 
-   }); 
-} 
+   await fetch("http://localhost:8080/project_backend/rest/task/add", {
+      method: "POST",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+   }).then(function (response) {
+      if (response.status == 200) {
+         alert("activity is added successfully :)");
+         addTask(task);
+      } else {
+         alert("something went wrong :(");
+      }
+   });
+}
