@@ -36,8 +36,6 @@ document.querySelector("#logout").addEventListener("click", function () {
 
 document.querySelector("#btn_edit").addEventListener("click", function () {
    window.location.href = "edit_profile.html";
-   background.style.visibility="visible";
-   modal.style.visibility ="visible";
 });
 
 document.querySelector("#btn_sprint").addEventListener("click", function () {

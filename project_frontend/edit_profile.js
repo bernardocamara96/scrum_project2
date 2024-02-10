@@ -1,14 +1,16 @@
-
+const username = sessionStorage.getItem("username");
 const background = document.querySelector("#background");
 const modal = document.querySelector("#edit_modal");
-const user_img = document.querySelector("#user_photo");
+const user_img = document.querySelector("#user_photo"); 
+console.log(user_img);
+
 
 // Verifica se o nome de usuário está armazenado no localStorage
-if(user!== null) {
-    // Obtém o nome de usuário armazenado no localStorage
-    const username = sessionStorage.getItem("username");
+if(username!== null) {
+   
     // Exibe o nome de usuário no elemento HTML com id "username"
     document.getElementById("username").textContent = username;
+    
 } else {
     // Caso o nome de usuário não esteja armazenado, exibe uma mensagem padrão
     document.getElementById("username").textContent = "Username not found";
@@ -27,19 +29,62 @@ document.querySelector("#btn_cancel").addEventListener("click", function () {
 
  //action listenner para o botao Change Photo
  document.querySelector("#change_photo").addEventListener("click", function(){
-    background.style.visibility = "visible";
+  background.style.visibility = "visible";
     modal.style.visibility = "visible";
  });
 
+ //action listenner para o botao save da foto
+ document.querySelector("#edit_confirmPhoto").addEventListener("click", function(){
+  background.style.visibility="hidden";
+   modal.style.visibility="hidden";
+ });
+
+ async function getUser(username) {
+    let response = await fetch(
+       "http://localhost:8080/project_backend/rest/users",
+ 
+       {
+          method: "GET",
+          headers: {
+             Accept: "*/*",
+             "Content-Type": "application/json",
+             username: username,
+          },
+       }
+    );
+ 
+    let user1 = await response.json();
+    console.log(user1);
+    return user1;
+ }
  getUser(username).then((result) => {
     console.log(result);
     user = result;
-    firstName_txt.textContent = user.firstName;
     user_img.src = user.imgURL;
+
+    viewpassword.value = user.password;
+    viewEmail.value = user.email;
+    viewFirstName.value = user.firstName;
+    viewLastName.value = user.lastName;
+    viewPhone.value = user.phoneNumber;
     backgroundScrum.style.backgroundColor = user.background_color;
     column1.style.backgroundColor = user.toDo_color;
     column2.style.backgroundColor = user.doing_color;
     column3.style.backgroundColor = user.done_color;
  });
+ 
+ const viewpassword = document.getElementById("edit_password");
+ const viewEmail = document.getElementById("edit_email");
+ const viewFirstName = document.getElementById("edit_firstName");
+ const viewLastName = document.getElementById("edit_lastName");
+ const viewPhone = document.getElementById("edit_phone");
+
+
+
+
+
+
+
+
 
 

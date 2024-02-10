@@ -1165,7 +1165,7 @@ label {
 .form_edit {
    margin: 5px;
    padding: 15px;
-   width: 700px;
+   width: 500px;
    background-color: var(--white);
    border-radius: 10px;
 }
@@ -1195,4 +1195,12 @@ label {
    width: 300px;
    padding: 10px;
    margin: 10px;
+}
+.descriptioLabel{
+   font-size: 10px;;
+   margin-bottom: 0;
+   font-weight: bold;
+}
+#user_photo{
+   border-radius: 50%;
 }
