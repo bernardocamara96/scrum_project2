@@ -2,7 +2,22 @@ const username = sessionStorage.getItem("username");
 const background = document.querySelector("#background");
 const modal = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo"); 
-console.log(user_img);
+const edit_photo = document.querySelector('#edit_photo');
+
+let user = null;
+
+getUser(username).then((result) => {
+   console.log(result);
+   user = result;
+   user_img.src = user.imgURL;
+   viewpassword.value = user.password;
+   viewEmail.value = user.email;
+   viewFirstName.value = user.firstName;
+   viewLastName.value = user.lastName;
+   viewPhone.value = user.phoneNumber;
+
+   
+});
 
 
 // Verifica se o nome de usuário está armazenado no localStorage
@@ -37,6 +52,14 @@ document.querySelector("#btn_cancel").addEventListener("click", function () {
  document.querySelector("#edit_confirmPhoto").addEventListener("click", function(){
   background.style.visibility="hidden";
    modal.style.visibility="hidden";
+   const newPhoto = document.querySelector("#edit_photoLabel").value;
+   user_img.src = newPhoto;
+   edit_photo.src = newPhoto;
+   updatePhoto(username,newPhoto);
+   user.imgURL = newPhoto;
+   
+   console.log(edit_photo.src);
+   
  });
 
  async function getUser(username) {
@@ -57,34 +80,39 @@ document.querySelector("#btn_cancel").addEventListener("click", function () {
     console.log(user1);
     return user1;
  }
- getUser(username).then((result) => {
-    console.log(result);
-    user = result;
-    user_img.src = user.imgURL;
-
-    viewpassword.value = user.password;
-    viewEmail.value = user.email;
-    viewFirstName.value = user.firstName;
-    viewLastName.value = user.lastName;
-    viewPhone.value = user.phoneNumber;
-    backgroundScrum.style.backgroundColor = user.background_color;
-    column1.style.backgroundColor = user.toDo_color;
-    column2.style.backgroundColor = user.doing_color;
-    column3.style.backgroundColor = user.done_color;
- });
+ 
  
  const viewpassword = document.getElementById("edit_password");
  const viewEmail = document.getElementById("edit_email");
  const viewFirstName = document.getElementById("edit_firstName");
  const viewLastName = document.getElementById("edit_lastName");
  const viewPhone = document.getElementById("edit_phone");
+ //Colocar os campos nao editáveis
+ viewpassword.readOnly = true;
+ viewEmail.readOnly = true;
+ viewFirstName.readOnly = true;
+ viewLastName.readOnly = true;
+ viewPhone.readOnly = true;
 
-
-
-
-
-
-
-
+async function updatePhoto(username, newPhoto){
+   
+   let response = await fetch(
+      "http://localhost:8080/project_backend/rest/users/updatePhoto/" + username + "/",
+      {
+         method:"PUT",
+         headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({ newPhoto: newPhoto })
+      }
+   );
+   if(response.status===200){
+      alert("User photo updated successfully. ");
+      console.log(user.imgURL);
+   }else if(response.status === 404){
+      alert("User not found");
+   }
+}
 
 

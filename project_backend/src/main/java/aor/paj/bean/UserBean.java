@@ -81,6 +81,19 @@ public class UserBean {
         return false;
     }
 
+    public User updatePhoto(String username, String newPhoto){
+        User currentUser = null;
+        for(int i=0; i< users.size() && currentUser==null; i++){
+            if(users.get(i).getUsername().equals(username)){
+                currentUser = users.get(i);
+                currentUser.setImgURL(newPhoto);
+                writeIntoJsonFile();
+            }
+        }
+        return currentUser;
+
+    }
+
     /*public boolean updateActivity(int id, Activity activity) {
         for (Activity a : activities) {
             if (a.getId() == id) {
