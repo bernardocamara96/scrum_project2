@@ -4,9 +4,7 @@ const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo"); 
 
-
 let user = null;
-  
 
    getUser(username).then((result) => {
        console.log(result);

@@ -31,7 +31,7 @@ document.querySelector("#register_submit").addEventListener("click", function (e
 
 document.querySelector("#register_confirmPhoto").addEventListener("click", function () {
    addUser(user);
-   //window.location.href = "login.html";
+   window.location.href = "login.html";
 });
 
 background.addEventListener("click", function () {
