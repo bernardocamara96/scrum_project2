@@ -1,40 +1,26 @@
 const title_txt = document.querySelector("#title");
 const description_txt = document.querySelector("#description");
-const tasks = JSON.parse(localStorage.getItem("tasks"));
-const task = JSON.parse(localStorage.getItem("task_object"));
-const index = localStorage.getItem("task_index");
-const priority_color = document.querySelector("#priority_color");
+const initial_date = document.querySelector("#initial_date");
+const end_date = document.querySelector("#end_dates");
 const priority_array = document.querySelectorAll("#color_section input");
-var priority_checked = 100;
-
-document.querySelector("#body_color").style.backgroundColor = localStorage.getItem("background_color");
-
-document.querySelector("#user").textContent = localStorage.getItem("username");
+const task_type = sessionStorage.getItem("taskType");
+const username = sessionStorage.getItem("username");
+let priority_checked = 100;
 
 writeDate();
 
 // Executa a função em intervalos de 1 segundo para atualizar a data
 setInterval(writeDate, 1000);
 
+getUser(username).then((result) => {
+   document.querySelector("#user").textContent = result.firstName;
+});
+
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
 é mostrado o botão de delete e o título da form é Task Edit, caso contrário os campos são deixados sem nada, o botão 
 de delete não é mostrado e o título da forma é Task Creation*/
-if (task.title != "") {
-   title_txt.value = task.title;
-   description_txt.value = task.description;
-   document.querySelector("#task_save").style.width = "46%";
+if (task_type == "edit") {
    document.querySelector("#task_delete").style.display = "inline-block";
-   document.querySelector("#task_creationTitle").textContent = "Task Edit";
-   if (task.priority == 100) {
-      priority_array[0].checked = true;
-      priority_color.style.backgroundColor = "#1eaa28";
-   } else if (task.priority == 200) {
-      priority_array[1].checked = true;
-      priority_color.style.backgroundColor = "#fbff00";
-   } else if (task.priority == 300) {
-      priority_array[2].checked = true;
-      priority_color.style.backgroundColor = "#e70000";
-   }
 } else {
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
@@ -48,40 +34,48 @@ vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso e
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
 document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
-      if (task.title == "") {
-         const data = new Date();
-         for (let i = 0; i < priority_array.length; i++) {
-            if (priority_array[i].checked) {
-               priority_checked = priority_array[i].value;
-            }
-         }
+      console.log(initial_date.value + " and " + end_date.value);
+      if (!end_date.value == "" && !initial_date.value == "") {
+         if (end_date.value > initial_date.value) {
+            if (task_type == "create") {
+               const data = new Date();
+               for (let i = 0; i < priority_array.length; i++) {
+                  if (priority_array[i].checked) {
+                     priority_checked = parseInt(priority_array[i].value);
+                  }
+               }
 
-         const task = {
-            id: data.getTime(),
-            column: "list1",
-            title: title_txt.value,
-            description: description_txt.value,
-            priority: priority_checked,
-            color: priority_color.style.backgroundColor,
-         };
+               let task = {
+                  id: data.getTime(),
+                  title: title_txt.value,
+                  description: description_txt.value,
+                  initialDate: initial_date.value,
+                  endDate: end_date.value,
+                  priority: priority_checked,
+                  state: "toDo",
+               };
 
-         tasks.push(task);
-         localStorage.setItem("tasks", JSON.stringify(tasks));
-         window.location.href = "scrum.html";
-      } else {
-         if (confirmEdit()) {
-            tasks[index].title = title_txt.value;
-            tasks[index].description = description_txt.value;
-            for (let i = 0; i < priority_array.length; i++) {
-               if (priority_array[i].checked) {
-                  priority_checked = priority_array[i].value;
+               addTask(username, task);
+
+               window.location.href = "scrum.html";
+            } else {
+               if (confirmEdit()) {
+                  for (let i = 0; i < priority_array.length; i++) {
+                     if (priority_array[i].checked) {
+                        priority_checked = priority_array[i].value;
+                     }
+                  }
+
+                  updateTask(username);
+
+                  window.location.href = "scrum.html";
                }
             }
-            tasks[index].priority = priority_checked;
-            tasks[index].color = priority_color.style.backgroundColor;
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            window.location.href = "scrum.html";
+         } else {
+            alert("The end date must be greater than the initial date");
          }
+      } else {
+         alert("You need to put the initial and end date");
       }
    } else {
       alert("Need to put a task title.");
@@ -92,8 +86,6 @@ for (let i = 0; i < priority_array.length; i++) {
    if (i == 0) {
       priority_array[i].addEventListener("click", function () {
          priority_color.style.backgroundColor = "#1eaa28";
-
-         console.log(priority_array[i].value);
       });
    } else if (i == 1) {
       priority_array[i].addEventListener("click", function () {
@@ -159,32 +151,61 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
+async function updateTask(username, id, title, description, initialDate, endDate, priority) {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
+      method: "PUT",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         id: id,
+         title: title,
+         description: description,
+         initialDate: initialDate,
+         endDate: endDate,
+         priority: priority,
+      },
+   }).then(function (response) {
+      if (response.status == 200) {
+         alert("Task was updated successfully.");
+      } else {
+         alert("Something went wrong.");
+      }
+   });
+}
 
-async function addTask(form){ 
-   let task = { 
-       'id' : '0', 
-       'title' : document.getElementById("title").value,
-       'description': document.getElementById("description")
-   }; 
-   console.log(task); 
+async function addTask(username_value, task) {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/create", {
+      method: "POST",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username_value,
+      },
+      body: JSON.stringify(task),
+   }).then(function (response) {
+      if (response.status == 200) {
+         alert("activity is added successfully :)");
+      } else {
+         alert("something went wrong :(");
+      }
+   });
+}
 
-   await fetch('http://localhost:8080/project_backend/rest/task/add', 
-   { 
-       method: 'POST', 
-       headers:  
-       { 
-           'Accept': '*/*', 
-           'Content-Type': 'application/json' 
-       }, 
-       body: JSON.stringify(task) 
-           
-     } 
-     ).then(function (response) { 
-       if (response.status == 200) { 
-         alert('activity is added successfully :)'); 
-         addTask(task); 
-       } else { 
-         alert('something went wrong :('); 
-       } 
-   }); 
-} 
+async function getUser(username) {
+   let response = await fetch(
+      "http://localhost:8080/project_backend/rest/users",
+
+      {
+         method: "GET",
+         headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            username: username,
+         },
+      }
+   );
+
+   let user1 = await response.json();
+   return user1;
+}

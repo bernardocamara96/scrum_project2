@@ -1,6 +1,8 @@
 package aor.paj.service;
 
+import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
+import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -14,6 +16,9 @@ public class UserService {
 
     @Inject
     UserBean userBean;
+
+    @Inject
+    TaskBean taskBean;
 
     @GET
     @Path("/all")
