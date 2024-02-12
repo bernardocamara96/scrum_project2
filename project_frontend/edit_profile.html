@@ -15,49 +15,48 @@
       </header>
 
       <div class="edit_container">
-        <div class="edit_photo">
-        <img src="user_photo" id="user_photo" alt="User photo">
-        <p id="username"></p>
-        <button class="change_photo" id="change_photo">Change photo</button>
-        </div>
-      <div class="edit_profile">
+         <div class="edit_photo">
+            <img src="user_photo" id="user_photo" alt="User photo" />
+            <p id="username"></p>
+            <button class="change_photo" id="change_photo">Change photo</button>
+         </div>
+         <div class="edit_profile">
             <label class="descriptioLabel">Password</label>
-           <input type="text" placeholder="Password" class="edit_element" id="edit_password" readOnly />
-           <button class="edit_button"><img src="pencil_icon.webp" alt="Edit" id="btn_password" /></button>
+            <input type="text" placeholder="Password" class="edit_element" id="edit_password" readonly />
+            <button class="edit_button" id="btn_password">&#9998;</button>
 
-           <label class="descriptioLabel">Email</label>
-           <input type="text" placeholder="Email" class="edit_element" id="edit_email" readOnly/>
-           <button class="edit_button"><img src="pencil_icon.webp" alt="Edit" id="btn_email" /></button>
-           <label class="descriptioLabel">First Name</label>
-           <input type="text" placeholder="First name" class="edit_element" id="edit_firstName" readOnly />
-           <button class="edit_button"><img src="pencil_icon.webp" alt="Edit" id="btn_firstName" /></button>
-           <label class="descriptioLabel">Last Name</label>
-           <input type="text" placeholder="Last name" class="edit_element" id="edit_lastName" readOnly />
-           <button class="edit_button"><img src="pencil_icon.webp" alt="Edit" id="btn_lastName" /></button>
-           <label class="descriptioLabel">Phone Number</label>
-           <input type="text" placeholder="Phone number" class="edit_element" id="edit_phone" readOnly />
-           <button class="edit_button"><img src="pencil_icon.webp" alt="Edit" id="btn_phone" /></button>
-
-    </div>
-    <div class="confirm_profile">
-        <button class="btn_cancel" id="btn_cancel">Cancel</button>
-    </div>
-    </div>
-    <div id="background"></div>
-    <div id="editModal" class="modal">
-      <div class="modal-content">
-          <span class="close">&times;</span>
-          <label for="new_value">New Value:</label>
-          <input type="text" id="new_value" placeholder="Enter new value">
-          <button id="confirmEdit">Confirm</button>
-          <button id="cancelEdit">Cancel</button>
+            <label class="descriptioLabel">Email</label>
+            <input type="text" placeholder="Email" class="edit_element" id="edit_email" readonly />
+            <button class="edit_button" id="btn_email">&#9998;</button>
+            <label class="descriptioLabel">First Name</label>
+            <input type="text" placeholder="First name" class="edit_element" id="edit_firstName" readonly />
+            <button class="edit_button" id="btn_firstName">&#9998;</button>
+            <label class="descriptioLabel">Last Name</label>
+            <input type="text" placeholder="Last name" class="edit_element" id="edit_lastName" readonly />
+            <button class="edit_button" id="btn_lastName">&#9998;</button>
+            <label class="descriptioLabel">Phone Number</label>
+            <input type="text" placeholder="Phone number" class="edit_element" id="edit_phone" readonly />
+            <button class="edit_button" id="btn_phone">&#9998;</button>
+         </div>
+         <div class="confirm_profile">
+            <button class="btn_cancel" id="btn_cancel">Cancel</button>
+         </div>
       </div>
-  </div>
-    <div class="modal" id="edit_modal">
-      <img src="user.png" alt="User photo" id="edit_photo" />
-      <input type="text" placeholder="Photo URL" id="edit_photoLabel" />
-      <button id="edit_confirmPhoto">Confirm</button>
-    </div>
+      <div id="background"></div>
+      <div id="editModal" class="modal">
+         <div class="modal-content">
+            <span class="close">&times;</span>
+            <label for="new_value">New Value:</label>
+            <input type="text" id="new_value" placeholder="Enter new value" />
+            <button id="confirmEdit">Confirm</button>
+            <button id="cancelEdit">Cancel</button>
+         </div>
+      </div>
+      <div class="modal" id="edit_modal">
+         <img src="user.png" alt="User photo" id="edit_photo" />
+         <input type="text" placeholder="Photo URL" id="edit_photoLabel" />
+         <button id="edit_confirmPhoto">Confirm</button>
+      </div>
       <footer>
          <div>Powered by:</div>
          <ul>

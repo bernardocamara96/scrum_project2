@@ -84,9 +84,9 @@ public class UserService {
         return Response.status(200).entity("deleted").build();
     }
     @PUT
-    @Path("/updatePhoto/{username}")
+    @Path("/updatePhoto")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoto(@PathParam("username") String username, @QueryParam("newPhoto") String newPhoto){
+    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("newPhoto") String newPhoto){
         User updateUser = userBean.updatePhoto(username, newPhoto);
         if(updateUser != null){
             return Response.status(200).entity(updateUser).build();

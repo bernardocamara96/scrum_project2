@@ -134,18 +134,13 @@ public class UserBean {
         return false;
     }
 
-<<<<<<< HEAD
-    public User updatePhoto(String username, String newPhoto){
-        User currentUser = null;
-        for(int i=0; i< users.size() && currentUser==null; i++){
-            if(users.get(i).getUsername().equals(username)){
-                currentUser = users.get(i);
-                currentUser.setImgURL(newPhoto);
-                writeIntoJsonFile();
-            }
-        }
-        return currentUser;
 
+    public User updatePhoto(String username, String newPhoto){
+        User currentUser = getUser(username);
+        currentUser.setImgURL(newPhoto);
+        writeIntoJsonFile();
+
+        return currentUser;
     }
     public boolean updatePassword(String username, String password) {
         boolean fieldChanged = false;
@@ -256,8 +251,6 @@ public class UserBean {
         return false;
     }*/
 
-=======
->>>>>>> ba41ad2a9336ba2529d082d3e6dbaefbcf411a83
     private void writeIntoJsonFile(){
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
