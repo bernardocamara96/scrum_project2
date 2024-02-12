@@ -2,30 +2,61 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @XmlRootElement
 public class Task {
     @XmlElement
-    int id;
+    private int id;
     @XmlElement
-    String title;
+    private String title;
     @XmlElement
-    String description;
+    private String description;
     @XmlElement
-    Date inicialDate;
+    private LocalDate initialDate;
     @XmlElement
-    Date finalDate;
+    private LocalDate endDate;
+    @XmlElement
+    private int priority;
+    @XmlElement
+    private String state;
 
     public Task() {
+        this.id = 0;
+        this.title = null;
+        this.description = null;
+        this.initialDate = null;
+        this.endDate = null;
+        this.priority=0;
+        this.state=null;
     }
 
-    public Task(int id, String title, String description, Date inicialDate, Date finalDate) {
+    public Task(int id, String title, String description, LocalDate initialDate, LocalDate endDate, int priority, String state) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.inicialDate = inicialDate;
-        this.finalDate = finalDate;
+        this.initialDate = initialDate;
+        this.endDate = endDate;
+        this.priority=priority;
+        this.state=state;
+    }
+
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public int getId() {
@@ -52,19 +83,19 @@ public class Task {
         this.description = description;
     }
 
-    public Date getInicialDate() {
-        return inicialDate;
+    public LocalDate getInitialDate() {
+        return initialDate;
     }
 
-    public void setInicialDate(Date inicialDate) {
-        this.inicialDate = inicialDate;
+    public void setInitialDate(LocalDate inicialDate) {
+        this.initialDate = inicialDate;
     }
 
-    public Date getFinalDate() {
-        return finalDate;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setFinalDate(Date finalDate) {
-        this.finalDate = finalDate;
+    public void setEndDate(LocalDate finalDate) {
+        this.endDate = finalDate;
     }
 }

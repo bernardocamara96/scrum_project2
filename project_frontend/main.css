@@ -791,6 +791,7 @@ th {
    margin-left: 10px;
    margin-bottom: 0px;
    border-radius: 5px;
+   height: 220px;
 }
 #task_creationTitle {
    color: var(--black);
@@ -818,11 +819,10 @@ th {
 }
 
 .descricaoTarefa {
-   margin: 50px auto;
-   background-color: rgb(244, 244, 244);
-   color: #fff;
+   margin: 40px auto;
+   background-color: var(--white);
    border-radius: 12px;
-   height: 31em;
+   height: 32.6em;
    width: 24em;
    padding: 10px 1em 1.8em 1em;
    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
@@ -840,6 +840,25 @@ th {
    margin-left: 10px;
 }
 
+#date_section {
+   display: flex;
+   flex-direction: row;
+   margin-left: 12px;
+}
+
+#date_section p {
+   color: var(--black);
+   margin-top: 5px;
+}
+
+#date_section input {
+   height: 5px;
+   width: 145px;
+   margin-top: 5px;
+}
+#end_date {
+   margin-left: 30px;
+}
 #color_section {
    display: flex;
    flex-direction: row;
@@ -1111,6 +1130,10 @@ label {
 
 #register_phone {
    margin-bottom: 30px;
+}
+
+#register_photo {
+   margin-left: 40px;
 }
 
 .register_elem {

@@ -3,6 +3,8 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.ArrayList;
+
 @XmlRootElement
 public class User {
     @XmlElement
@@ -19,7 +21,8 @@ public class User {
     private String phoneNumber;
     @XmlElement
     private String imgURL;
-
+    @XmlElement
+    private ArrayList<Task> tasks;
     @XmlElement
     private String toDo_color;
 
@@ -41,6 +44,7 @@ public class User {
         this.lastName=null;
         this.phoneNumber=null;
         this.imgURL=null;
+        this.tasks=null;
         this.toDo_color=null;
         this.doing_color=null;
         this.done_color=null;
@@ -48,6 +52,7 @@ public class User {
     }
     public User(String username, String password, String email, String firstName, String lastName, String phoneNumber,
                 String imgURL, String toDo_color, String doing_color, String done_color, String background_color) {
+
         this.username = username;
         this.password = password;
         this.email = email;
@@ -55,12 +60,21 @@ public class User {
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.imgURL = imgURL;
+        this.tasks=new ArrayList<>();
         this.toDo_color=toDo_color;
         this.doing_color=doing_color;
         this.done_color=done_color;
         this.background_color=background_color;
     }
 
+
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     public String getToDo_color() {
         return toDo_color;
@@ -149,5 +163,10 @@ public class User {
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
     }
+
+    public void addTask(Task task){
+        tasks.add(task);
+    }
+
 }
 

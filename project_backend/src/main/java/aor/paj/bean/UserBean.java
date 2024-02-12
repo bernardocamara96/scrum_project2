@@ -1,5 +1,6 @@
 package aor.paj.bean;
 
+import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @ApplicationScoped
@@ -35,7 +37,36 @@ public class UserBean {
     public void addUser(User user) {
         users.add(user);
         writeIntoJsonFile();
+    }
 
+    public void addTask(User user, Task task){
+        user.addTask(task);
+        writeIntoJsonFile();
+    }
+
+    public Task getTask(User user, int id){
+        Task taskRequested=null;
+        ArrayList<Task> tasks=user.getTasks();
+        for (int i=0;i<tasks.size() && taskRequested==null;i++){
+            if (tasks.get(i).getId()==id){
+                taskRequested=tasks.get(i);
+            }
+        }
+        return taskRequested;
+    }
+
+    public void updateTaskState(Task task, String state){
+        task.setState(state);
+        writeIntoJsonFile();
+    }
+    public void updateTask(Task task, String title, String description, LocalDate initialDate, LocalDate endDate,
+                           int priority){
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setInitialDate(initialDate);
+        task.setEndDate(endDate);
+        task.setPriority(priority);
+        writeIntoJsonFile();
     }
 
 
@@ -48,11 +79,9 @@ public class UserBean {
         }
         return userRequested;
     }
-    public int validateUserRegister(String username,String password, String email, String firstName,
-                                        String lastName, String phoneNumber){
+    public int validateUserRegister(String username,String password, String email, String firstName, String lastName, String phoneNumber){
 
-
-        int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2, USER_VALIDATE=3;
+        final int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2,USER_VALIDATE=3;
         int VALIDATION_STATE=USER_VALIDATE;
 
         if(username.equals("") || password.equals("") || email.equals("") || firstName.equals("") || lastName.equals("") || phoneNumber.equals("")) {
@@ -60,12 +89,13 @@ public class UserBean {
             VALIDATION_STATE= EMPTY_FIELDS;
         }
         else {
-            for (User user: users) {
 
-                if (user.getUsername().equals(username)){
+            for (int i=0;i<users.size() && VALIDATION_STATE!=USERNAME_EXISTS && VALIDATION_STATE!=EMAIL_EXISTS;i++) {
+
+                if (users.get(i).getUsername().equals(username)){
                     VALIDATION_STATE= USERNAME_EXISTS;
                 }
-                else if (user.getEmail().equals(email)){
+                else if (users.get(i).getEmail().equals(email)){
                     VALIDATION_STATE= EMAIL_EXISTS;
                 }
             }
@@ -104,6 +134,7 @@ public class UserBean {
         return false;
     }
 
+<<<<<<< HEAD
     public User updatePhoto(String username, String newPhoto){
         User currentUser = null;
         for(int i=0; i< users.size() && currentUser==null; i++){
@@ -225,6 +256,8 @@ public class UserBean {
         return false;
     }*/
 
+=======
+>>>>>>> ba41ad2a9336ba2529d082d3e6dbaefbcf411a83
     private void writeIntoJsonFile(){
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
