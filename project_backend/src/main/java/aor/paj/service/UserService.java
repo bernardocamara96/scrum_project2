@@ -92,6 +92,69 @@ public class UserService {
             return Response.status(404).entity("User with username " + username + "not found").build();
         }
     }
+    @PUT
+    @Path("/updatePassword/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePassword(@PathParam("username") String username, @QueryParam("password") String password){
+        boolean fieldChanged = userBean.updatePassword(username, password);
+        if(fieldChanged){
+            return Response.status(200).entity("Password changed with successfuly").build();
+        }else{
+            return Response.status(404).entity("User with username " + username + "not found").build();
+        }
+
+    }
+
+    @PUT
+    @Path("/updateEmail/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateEmail(@PathParam("username") String username, @QueryParam("email") String email){
+        boolean fieldChanged = userBean.updateEmail(username, email);
+        if(fieldChanged){
+            return Response.status(200).entity("Email changed with successfuly").build();
+        }else{
+            return Response.status(404).entity("Email already exists").build();
+        }
+
+    }
+    @PUT
+    @Path("/updateFirstName/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateFirstName(@PathParam("username") String username, @QueryParam("firstName") String firstName){
+        boolean fieldChanged = userBean.updateFirstName(username, firstName);
+        if(fieldChanged){
+            return Response.status(200).entity("First Name changed with successfuly").build();
+        }else{
+            return Response.status(404).entity("not found").build();
+        }
+
+    }
+    @PUT
+    @Path("/updateLastName/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateLastName(@PathParam("username") String username, @QueryParam("lastName") String lastName){
+           boolean fieldChanged = userBean.updateLastName(username, lastName);
+            if(fieldChanged){
+                return Response.status(200).entity("Last Name changed with successfuly").build();
+            }else{
+                return Response.status(404).entity("not found").build();
+            }
+
+    }
+
+    @PUT
+    @Path("/updatePhoneNumber/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePhoneNumber(@PathParam("username") String username, @QueryParam("phonenumber") String phonenumber){
+        boolean fieldChanged = userBean.updatePhoneNumber(username, phonenumber);
+        if(fieldChanged){
+            return Response.status(200).entity("Phone Number  changed with successfuly").build();
+        }else{
+            return Response.status(404).entity("not found").build();
+        }
+
+    }
+
 
 
    /* @PUT

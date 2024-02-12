@@ -1205,14 +1205,14 @@ label {
    border-radius: 50%;
 }
 .edit_button{
-   background: none;
    border: none;
-   height: 40px;
-   width:40px;
-   cursor:pointer;
 }
+
 .edit_button img{
-   width: 100%;
-   height: 100%;
-   display: block;
+   width:20px;
+   height: 20px;
+   cursor: pointer;
+   background:none;
+   border: none;
 }
+
