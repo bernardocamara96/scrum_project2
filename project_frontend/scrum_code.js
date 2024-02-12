@@ -1,4 +1,5 @@
 const username = sessionStorage.getItem("username");
+const pass = sessionStorage.getItem("pass");
 const firstName_txt = document.querySelector("#user");
 const retros = JSON.parse(localStorage.getItem("retros")) || [];
 const user_img = document.querySelector("#user_img");
@@ -12,7 +13,7 @@ const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
 
-getUser(username).then((result) => {
+getUser(username, pass).then((result) => {
    user = result;
    firstName_txt.textContent = user.firstName;
    user_img.src = user.imgURL;
@@ -23,7 +24,7 @@ getUser(username).then((result) => {
    document.querySelector("#done_color").value = user.done_color;
 });
 
-getTasks(username).then((result) => {
+getTasks(username, pass).then((result) => {
    let tasks = result;
    printTasks(tasks);
    for (let taskList of taskLists) {
@@ -35,7 +36,7 @@ getTasks(username).then((result) => {
          for (let task of tasks) {
             if (draggable.id == task.id) {
                task.state = this.id;
-               updateTaskState(username, task.id, this.id);
+               updateTaskState(username, pass, task.id, this.id);
             }
          }
       });
@@ -145,7 +146,7 @@ function printTasks(tasks) {
       const task_div = document.createElement("div");
       task_div.id = tasks[i].id;
       task_div.classList.add("task");
-      taskCreationAddEvents(task_div);
+      taskCreationAddEvents(task_div, tasks);
       task_div.setAttribute("draggable", "true");
 
       if (tasks[i].priority == LOW) {
@@ -191,7 +192,7 @@ function printTasks(tasks) {
 }
 
 /*Função que adiciona todos os eventos a cada div das tarefas. */
-function taskCreationAddEvents(task_div) {
+function taskCreationAddEvents(task_div, tasks) {
    /*Evento que abre a modal que vai mostrar o título e a descrição da tarefa */
    task_div.addEventListener("dblclick", function () {
       for (let i = 0; i < tasks.length; i++) {
@@ -266,13 +267,14 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-async function getTasks(username) {
+async function getTasks(username, pass) {
    let response = await fetch("http://localhost:8080/project_backend/rest/tasks", {
       method: "GET",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
+         pass: pass,
       },
    });
 
@@ -280,7 +282,7 @@ async function getTasks(username) {
    return tasks;
 }
 
-async function getUser(username) {
+async function getUser(username, pass) {
    let response = await fetch(
       "http://localhost:8080/project_backend/rest/users",
 
@@ -290,6 +292,7 @@ async function getUser(username) {
             Accept: "*/*",
             "Content-Type": "application/json",
             username: username,
+            pass: pass,
          },
       }
    );
@@ -298,7 +301,7 @@ async function getUser(username) {
    return user1;
 }
 
-async function updateTaskState(username, id, state) {
+async function updateTaskState(username, pass, id, state) {
    console.log(username + " " + id + " " + state);
    await fetch("http://localhost:8080/project_backend/rest/tasks/state", {
       method: "PUT",
@@ -306,6 +309,7 @@ async function updateTaskState(username, id, state) {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
+         pass: pass,
          id: id,
          state: state,
       },
@@ -325,7 +329,7 @@ document.querySelector("#apply").addEventListener("click", function () {
    const doing_color = document.querySelector("#doing_color").value;
    const done_color = document.querySelector("#done_color").value;
 
-   saveColors(username, background_color, toDo_color, doing_color, done_color);
+   saveColors(username, pass, background_color, toDo_color, doing_color, done_color);
 
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
@@ -381,13 +385,14 @@ function colorizeApp(backgroundColor, toDoColor, doingColor, doneColor) {
    });
 }
 
-async function saveColors(username, background_color, toDo_color, doing_color, done_color) {
+async function saveColors(username, pass, background_color, toDo_color, doing_color, done_color) {
    await fetch("http://localhost:8080/project_backend/rest/users", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
+         pass: pass,
          background_color: background_color,
          toDo_color: toDo_color,
          doing_color: doing_color,

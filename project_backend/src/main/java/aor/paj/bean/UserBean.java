@@ -6,11 +6,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -70,10 +74,10 @@ public class UserBean {
     }
 
 
-    public User getUser(String username){
+    public User getUser(String username, String password){
         User userRequested=null;
         for(int i=0;i<users.size() && userRequested==null;i++){
-            if(users.get(i).getUsername().equals(username)){
+            if(users.get(i).getUsername().equals(username) && users.get(i).getPassword().equals(password)){
                 userRequested=users.get(i);
             }
         }
@@ -81,16 +85,21 @@ public class UserBean {
     }
     public int validateUserRegister(String username,String password, String email, String firstName, String lastName, String phoneNumber){
 
-        final int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2,USER_VALIDATE=3;
+        final int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2,INVALID_EMAIL=3,INVALID_PHONE=4,USER_VALIDATE=10;
         int VALIDATION_STATE=USER_VALIDATE;
 
         if(username.equals("") || password.equals("") || email.equals("") || firstName.equals("") || lastName.equals("") || phoneNumber.equals("")) {
 
             VALIDATION_STATE= EMPTY_FIELDS;
         }
-        else {
-
-            for (int i=0;i<users.size() && VALIDATION_STATE!=USERNAME_EXISTS && VALIDATION_STATE!=EMAIL_EXISTS;i++) {
+        else if(!isValidEmail(email)){
+            VALIDATION_STATE=INVALID_EMAIL;
+        }
+        else if (!isValidPhoneNumber(phoneNumber)){
+            VALIDATION_STATE=INVALID_PHONE;
+        }
+        else{
+            for (int i=0;i<users.size() && VALIDATION_STATE==USER_VALIDATE;i++) {
 
                 if (users.get(i).getUsername().equals(username)){
                     VALIDATION_STATE= USERNAME_EXISTS;
@@ -101,6 +110,48 @@ public class UserBean {
             }
         }
         return VALIDATION_STATE;
+    }
+
+
+    public boolean isValidPhoneNumber(String phoneNumber){
+        boolean valideNumber=false;
+        try {
+            // Remove non-digit characters from the phone number
+            String cleanedPhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+
+            // Check if the cleaned phone number has the expected length
+            if (cleanedPhoneNumber.length() == 9 || cleanedPhoneNumber.length() == 10) {
+                // Additional checks based on your requirements, if needed
+                valideNumber=true;
+            } else {
+                valideNumber= false;
+            }
+        } catch (NumberFormatException e) {
+            // An exception occurred during parsing (non-numeric characters present)
+            valideNumber=false;
+        }
+        return valideNumber;
+    }
+
+    public boolean isValidUrl(String urlString) {
+        try {
+            // Attempt to create a URL object with the provided string
+            new URL(urlString);
+            return true;
+        } catch (MalformedURLException e) {
+            // URL is not valid
+            return false;
+        }
+    }
+    public boolean isValidEmail(String email) {
+        boolean isValid = false;
+        try {
+            InternetAddress internetAddress = new InternetAddress(email);
+            internetAddress.validate();
+            isValid = true;
+        } catch (AddressException e) {
+        }
+        return isValid;
     }
 
     public void saveColors(User user,String background_color,String toDo_color, String doing_color, String done_color){
@@ -135,8 +186,8 @@ public class UserBean {
     }
 
 
-    public User updatePhoto(String username, String newPhoto){
-        User currentUser = getUser(username);
+    public User updatePhoto(String username,String pass,String newPhoto){
+        User currentUser = getUser(username,pass);
         currentUser.setImgURL(newPhoto);
         writeIntoJsonFile();
 

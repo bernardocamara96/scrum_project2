@@ -5,6 +5,7 @@ const end_date = document.querySelector("#end_dates");
 const priority_array = document.querySelectorAll("#color_section input");
 const task_type = sessionStorage.getItem("taskType");
 const username = sessionStorage.getItem("username");
+const pass = sessionStorage.getItem("pass");
 let priority_checked = 100;
 
 writeDate();
@@ -12,8 +13,10 @@ writeDate();
 // Executa a função em intervalos de 1 segundo para atualizar a data
 setInterval(writeDate, 1000);
 
-getUser(username).then((result) => {
+getUser(username, pass).then((result) => {
    document.querySelector("#user").textContent = result.firstName;
+   document.querySelector("#body_color").style.backgroundColor = result.background_color;
+   document.querySelector("#user_img").src = result.imgURL;
 });
 
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
@@ -55,7 +58,7 @@ document.querySelector("#task_save").addEventListener("click", function () {
                   state: "toDo",
                };
 
-               addTask(username, task);
+               addTask(username, pass, task);
 
                window.location.href = "scrum.html";
             } else {
@@ -151,13 +154,14 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-async function updateTask(username, id, title, description, initialDate, endDate, priority) {
+async function updateTask(username, pass, id, title, description, initialDate, endDate, priority) {
    await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
+         pass: pass,
          id: id,
          title: title,
          description: description,
@@ -174,13 +178,14 @@ async function updateTask(username, id, title, description, initialDate, endDate
    });
 }
 
-async function addTask(username_value, task) {
+async function addTask(username_value, pass, task) {
    await fetch("http://localhost:8080/project_backend/rest/tasks/create", {
       method: "POST",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username_value,
+         pass: pass,
       },
       body: JSON.stringify(task),
    }).then(function (response) {
@@ -192,7 +197,7 @@ async function addTask(username_value, task) {
    });
 }
 
-async function getUser(username) {
+async function getUser(username, pass) {
    let response = await fetch(
       "http://localhost:8080/project_backend/rest/users",
 
@@ -202,6 +207,7 @@ async function getUser(username) {
             Accept: "*/*",
             "Content-Type": "application/json",
             username: username,
+            pass: pass,
          },
       }
    );

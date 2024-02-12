@@ -35,11 +35,15 @@ public class UserService {
 
         int validate = userBean.validateUserRegister(user_username,user_password,user_email,user_firstName,user_lastName,user_phoneNumber);
 
-        if (validate==3) return Response.status(200).entity("New user was validated").build();
+        if (validate==10) return Response.status(200).entity("New user was validated").build();
 
-        else if(validate==2) return Response.status(404).entity("Email exists").build();
+        else if(validate==4) return Response.status(400).entity("Phone number invalid").build();
 
-        else if(validate==1) return Response.status(406).entity("Username exists").build();
+        else if(validate==3) return Response.status(400).entity("Email invalid").build();
+
+        else if(validate==2) return Response.status(409).entity("Email exists").build();
+
+        else if(validate==1) return Response.status(409).entity("Username exists").build();
 
         else if(validate==0) return Response.status(400).entity("There are empty fields").build();
 
@@ -51,14 +55,33 @@ public class UserService {
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
-        userBean.addUser(user);
-        return Response.status(200).entity("A new user is created").build();
+        int validateUser=userBean.validateUserRegister(user.getUsername(),user.getPassword(),user.getEmail(),user.getFirstName(),user.getLastName(),user.getPhoneNumber());
+        if(validateUser==10) {
+            if(userBean.isValidUrl(user.getImgURL())) {
+                userBean.addUser(user);
+                return Response.status(200).entity("A new user was created").build();
+            }
+            else return Response.status(400).entity("The URL is invalid").build();
+        }
+        else if(validateUser==4) return Response.status(400).entity("Phone number invalid").build();
+
+        else if(validateUser==3) return Response.status(400).entity("Email invalid").build();
+
+        else if(validateUser==2) return Response.status(409).entity("Email exists").build();
+
+        else if(validateUser==1) return Response.status(409).entity("Username exists").build();
+
+        else if(validateUser==0) return Response.status(400).entity("There are empty fields").build();
+
+        return Response.status(405).entity("Something went wrong").build();
+
+
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@HeaderParam("username")String username){
-        return userBean.getUser(username);
+    public User getUser(@HeaderParam("username")String username,@HeaderParam("pass")String pass){
+        return userBean.getUser(username,pass);
     }
 
     @POST
@@ -67,7 +90,7 @@ public class UserService {
     public Response validateLogin(@HeaderParam("username")String username, @HeaderParam("password")String password) {
         User user = userBean.validateLogin(username, password);
         if (user==null)
-            return Response.status(404).entity("User with this username is not found").build();
+            return Response.status(404).entity("Wrong data").build();
 
         return Response.status(200).entity(user).build();
 
@@ -86,8 +109,8 @@ public class UserService {
     @PUT
     @Path("/updatePhoto")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("newPhoto") String newPhoto){
-        User updateUser = userBean.updatePhoto(username, newPhoto);
+    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("pass")String pass,@HeaderParam("newPhoto") String newPhoto){
+        User updateUser = userBean.updatePhoto(username, pass,newPhoto);
         if(updateUser != null){
             return Response.status(200).entity(updateUser).build();
         }else{
@@ -161,10 +184,10 @@ public class UserService {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response saveColors(@HeaderParam("username")String username,@HeaderParam("background_color")String background_color,@HeaderParam("toDo_color")String toDo_color,
+    public Response saveColors(@HeaderParam("username")String username,@HeaderParam("pass")String password,@HeaderParam("background_color")String background_color,@HeaderParam("toDo_color")String toDo_color,
                                 @HeaderParam("doing_color")String doing_color,@HeaderParam("done_color")String done_color){
 
-        User userRequest=userBean.getUser(username);
+        User userRequest=userBean.getUser(username,password);
 
         if (userRequest==null) return Response.status(404).entity("You don't have authorization to make changes").build();
 

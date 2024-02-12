@@ -25,22 +25,22 @@ public class TaskService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasks(@HeaderParam("username")String username) {
-        User user=userBean.getUser(username);
+    public List<Task> getTasks(@HeaderParam("username")String username, @HeaderParam("pass")String password) {
+        User user=userBean.getUser(username, password);
         return user.getTasks();
     }
 
     @PUT
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("username") String username,@HeaderParam("id") int id,@HeaderParam("title") String title,
+    public Response updateTask(@HeaderParam("username") String username,@HeaderParam("pass")String password,@HeaderParam("id") int id,@HeaderParam("title") String title,
                                @HeaderParam("description") String description, @HeaderParam("initialDate") String initialDate,
                                @HeaderParam("endDate")String endDate, @HeaderParam("priority")int priority){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate initialDateFormated = LocalDate.parse(initialDate, formatter);
         LocalDate endDateFormated = LocalDate.parse(endDate, formatter);
-        User userRequested=userBean.getUser(username);
+        User userRequested=userBean.getUser(username, password);
         Task taskChanged=userBean.getTask(userRequested,id);
         userBean.updateTask(taskChanged,title,description,initialDateFormated,endDateFormated,priority);
         return Response.status(200).entity("Task was updated").build();
@@ -49,8 +49,8 @@ public class TaskService {
     @PUT
     @Path("/state")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateState(@HeaderParam("username")String username, @HeaderParam("id")int id,@HeaderParam("state")String state){
-        User userRequested=userBean.getUser(username);
+    public Response updateState(@HeaderParam("username")String username,@HeaderParam("pass")String password, @HeaderParam("id")int id,@HeaderParam("state")String state){
+        User userRequested=userBean.getUser(username, password);
         Task taskRequested=userBean.getTask(userRequested,id);
         userBean.updateTaskState(taskRequested,state);
 
@@ -61,8 +61,8 @@ public class TaskService {
     @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTask(@HeaderParam("username")String username, Task task){
-        User userRequested=userBean.getUser(username);
+    public Response addTask(@HeaderParam("username")String username,@HeaderParam("pass")String password ,Task task){
+        User userRequested=userBean.getUser(username, password);
         userBean.addTask(userRequested,task);
 
         return Response.status(200).entity("Task created").build();

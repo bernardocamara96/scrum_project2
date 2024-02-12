@@ -21,6 +21,7 @@ async function validateUser(username, password) {
    ).then(function (response) {
       if (response.status == 200) {
          sessionStorage.setItem("username", username);
+         sessionStorage.setItem("pass", password);
          window.location.href = "scrum.html";
       } else if (response.status == 404) {
          alert("Wrong data");

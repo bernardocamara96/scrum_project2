@@ -12,11 +12,23 @@ const form1 = document.querySelector("#form_register");
 
 form1.addEventListener("submit", function (e) {
    e.preventDefault();
-   validateUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value);
+   if (
+      username_txt.value != "" &&
+      password.value != "" &&
+      email.value != "" &&
+      firstName.value != "" &&
+      lastName.value != "" &&
+      phone.value != ""
+   ) {
+      if (isValidPhoneNumber(phone.value)) {
+         if (isValidEmail(email.value)) {
+            validateUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value);
+         } else alert("Invalid email");
+      } else alert("Invalid phone number");
+   } else alert("All fields are required");
 });
 
 document.querySelector("#register_confirmPhoto").addEventListener("click", function () {
-   console.log(photo.src);
    let user = {
       username: username_txt.value,
       password: password.value,
@@ -45,6 +57,26 @@ photo_label.addEventListener("change", function () {
       photo.src = photo_label.value;
    } else photo.src = "user.png";
 });
+
+function isValidPhoneNumber(phoneNumber) {
+   valideNumber = true;
+
+   if (phoneNumber.length != 9 && phoneNumber.length != 10) valideNumber = false;
+   // Check if the phone number has the expected format
+   if (!phoneNumber.match(/^\d+$/)) {
+      valideNumber = false;
+   }
+   return valideNumber;
+}
+
+function isValidEmail(email) {
+   try {
+      new URL("mailto:" + email);
+      return true;
+   } catch {
+      return false;
+   }
+}
 
 function isValidURL(url) {
    try {
@@ -76,13 +108,8 @@ async function validateUser(username_txt, password_txt, email_txt, firstName_txt
       if (response.status == 200) {
          modal.style.visibility = "visible";
          background.style.visibility = "visible";
-      } else if (response.status == 406) {
-         alert("Username already exists");
-      } else if (response.status == 404) {
-         alert("Email already exists");
-      } else if (response.status == 400) {
-         alert("There are empty fields");
-      } else alert("Something went wrong");
+      } else if (response.status == 409) alert("Username or Email already exists");
+      else alert("Something went wrong");
    });
 }
 
@@ -97,7 +124,7 @@ async function addUser(user) {
       body: JSON.stringify(user),
    }).then(function (response) {
       if (response.status == 200) {
-         alert("User is added successfully :)");
+         alert("Welcome to AgileUp :)");
       } else {
          alert("something went wrong :(");
       }
