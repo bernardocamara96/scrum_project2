@@ -44,7 +44,6 @@ public class UserBean {
         writeIntoJsonFile();
     }
 
-
     public Task getTask(User user, int id){
         Task taskRequested=null;
         ArrayList<Task> tasks=user.getTasks();
@@ -56,6 +55,10 @@ public class UserBean {
         return taskRequested;
     }
 
+    public void updateTaskState(Task task, String state){
+        task.setState(state);
+        writeIntoJsonFile();
+    }
     public void updateTask(Task task, String title, String description, LocalDate initialDate, LocalDate endDate,
                            int priority){
         task.setTitle(title);

@@ -24,7 +24,8 @@ getUser(username).then((result) => {
 });
 
 getTasks(username).then((result) => {
-   printTasks(result);
+   let tasks = result;
+   printTasks(tasks);
    for (let taskList of taskLists) {
       taskList.addEventListener("dragover", function (e) {
          e.preventDefault();
@@ -34,6 +35,7 @@ getTasks(username).then((result) => {
          for (let task of tasks) {
             if (draggable.id == task.id) {
                task.state = this.id;
+               updateTaskState(username, task.id, this.id);
             }
          }
       });
@@ -294,6 +296,20 @@ async function getUser(username) {
 
    let user1 = await response.json();
    return user1;
+}
+
+async function updateTaskState(username, id, state) {
+   console.log(username + " " + id + " " + state);
+   await fetch("http://localhost:8080/project_backend/rest/tasks/state", {
+      method: "PUT",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         id: id,
+         state: state,
+      },
+   });
 }
 
 //////CORES///////////////////////////////////////////////////////////////////////////////////////

@@ -36,6 +36,7 @@ public class TaskService {
     public Response updateTask(@HeaderParam("username") String username,@HeaderParam("id") int id,@HeaderParam("title") String title,
                                @HeaderParam("description") String description, @HeaderParam("initialDate") String initialDate,
                                @HeaderParam("endDate")String endDate, @HeaderParam("priority")int priority){
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate initialDateFormated = LocalDate.parse(initialDate, formatter);
         LocalDate endDateFormated = LocalDate.parse(endDate, formatter);
@@ -44,6 +45,18 @@ public class TaskService {
         userBean.updateTask(taskChanged,title,description,initialDateFormated,endDateFormated,priority);
         return Response.status(200).entity("Task was updated").build();
     }
+
+    @PUT
+    @Path("/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateState(@HeaderParam("username")String username, @HeaderParam("id")int id,@HeaderParam("state")String state){
+        User userRequested=userBean.getUser(username);
+        Task taskRequested=userBean.getTask(userRequested,id);
+        userBean.updateTaskState(taskRequested,state);
+
+        return Response.status(200).entity("Task was updated").build();
+    }
+
 
     @POST
     @Path("/create")
@@ -56,7 +69,7 @@ public class TaskService {
     }
 
 
-    @GET
+    /*@GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTask(@PathParam("id")int id) {
@@ -91,5 +104,5 @@ public class TaskService {
             return Response.status(406).entity("Task with this id is not found").build();
 
         return Response.status(200).entity("updated").build();
-    }
+    }*/
 }

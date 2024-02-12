@@ -20,6 +20,7 @@ getUser(username).then((result) => {
 é mostrado o botão de delete e o título da form é Task Edit, caso contrário os campos são deixados sem nada, o botão 
 de delete não é mostrado e o título da forma é Task Creation*/
 if (task_type == "edit") {
+   document.querySelector("#task_delete").style.display = "inline-block";
 } else {
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
