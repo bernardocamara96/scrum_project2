@@ -16,6 +16,7 @@ form1.addEventListener("submit", function (e) {
 });
 
 document.querySelector("#register_confirmPhoto").addEventListener("click", function () {
+   console.log(photo.src);
    let user = {
       username: username_txt.value,
       password: password.value,
@@ -42,7 +43,7 @@ background.addEventListener("click", function () {
 photo_label.addEventListener("change", function () {
    if (isValidURL(photo_label.value)) {
       photo.src = photo_label.value;
-   }
+   } else photo.src = "user.png";
 });
 
 function isValidURL(url) {
@@ -86,8 +87,6 @@ async function validateUser(username_txt, password_txt, email_txt, firstName_txt
 }
 
 async function addUser(user) {
-   user.imgURL = photo_label.value;
-   console.log(user);
    await fetch("http://localhost:8080/project_backend/rest/users/add", {
       method: "POST",
       headers: {
@@ -99,7 +98,6 @@ async function addUser(user) {
    }).then(function (response) {
       if (response.status == 200) {
          alert("User is added successfully :)");
-         window.location.href = "login.html";
       } else {
          alert("something went wrong :(");
       }

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @ApplicationScoped
@@ -40,6 +41,28 @@ public class UserBean {
 
     public void addTask(User user, Task task){
         user.addTask(task);
+        writeIntoJsonFile();
+    }
+
+
+    public Task getTask(User user, int id){
+        Task taskRequested=null;
+        ArrayList<Task> tasks=user.getTasks();
+        for (int i=0;i<tasks.size() && taskRequested==null;i++){
+            if (tasks.get(i).getId()==id){
+                taskRequested=tasks.get(i);
+            }
+        }
+        return taskRequested;
+    }
+
+    public void updateTask(Task task, String title, String description, LocalDate initialDate, LocalDate endDate,
+                           int priority){
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setInitialDate(initialDate);
+        task.setEndDate(endDate);
+        task.setPriority(priority);
         writeIntoJsonFile();
     }
 

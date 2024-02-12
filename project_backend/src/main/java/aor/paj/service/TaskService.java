@@ -9,6 +9,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Path("/tasks")
@@ -23,7 +25,24 @@ public class TaskService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasks() {return taskBean.getTasks();
+    public List<Task> getTasks(@HeaderParam("username")String username) {
+        User user=userBean.getUser(username);
+        return user.getTasks();
+    }
+
+    @PUT
+    @Path("/update")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTask(@HeaderParam("username") String username,@HeaderParam("id") int id,@HeaderParam("title") String title,
+                               @HeaderParam("description") String description, @HeaderParam("initialDate") String initialDate,
+                               @HeaderParam("endDate")String endDate, @HeaderParam("priority")int priority){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate initialDateFormated = LocalDate.parse(initialDate, formatter);
+        LocalDate endDateFormated = LocalDate.parse(endDate, formatter);
+        User userRequested=userBean.getUser(username);
+        Task taskChanged=userBean.getTask(userRequested,id);
+        userBean.updateTask(taskChanged,title,description,initialDateFormated,endDateFormated,priority);
+        return Response.status(200).entity("Task was updated").build();
     }
 
     @POST
@@ -32,18 +51,10 @@ public class TaskService {
     public Response addTask(@HeaderParam("username")String username, Task task){
         User userRequested=userBean.getUser(username);
         userBean.addTask(userRequested,task);
-        taskBean.addTask(task);
+
         return Response.status(200).entity("Task created").build();
     }
 
-    @POST
-    @Path("/add")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addTask(Task a) {
-        taskBean.addTask(a);
-        return Response.status(200).entity("A new task is created").build();
-
-    }
 
     @GET
     @Path("/{id}")

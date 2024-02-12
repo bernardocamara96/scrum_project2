@@ -1,13 +1,16 @@
 const username = sessionStorage.getItem("username");
 const firstName_txt = document.querySelector("#user");
-const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 const retros = JSON.parse(localStorage.getItem("retros")) || [];
 const user_img = document.querySelector("#user_img");
 const column1 = document.querySelector("#column1");
 const column2 = document.querySelector("#column2");
 const column3 = document.querySelector("#column3");
 const backgroundScrum = document.querySelector("#background");
+const taskLists = document.querySelectorAll(".task_list");
 let user = null;
+const LOW = 100;
+const MEDIUM = 200;
+const HIGH = 300;
 
 getUser(username).then((result) => {
    user = result;
@@ -20,7 +23,22 @@ getUser(username).then((result) => {
    document.querySelector("#done_color").value = user.done_color;
 });
 
-printTasks(tasks);
+getTasks(username).then((result) => {
+   printTasks(result);
+   for (let taskList of taskLists) {
+      taskList.addEventListener("dragover", function (e) {
+         e.preventDefault();
+         const draggable = document.querySelector(".drag");
+         taskList.appendChild(draggable);
+
+         for (let task of tasks) {
+            if (draggable.id == task.id) {
+               task.state = this.id;
+            }
+         }
+      });
+   }
+});
 
 writeDate();
 
@@ -50,26 +68,10 @@ document.querySelector("#btn_task").addEventListener("click", function () {
    window.location.href = "task.html";
 });
 
-const taskLists = document.querySelectorAll(".task_list");
-
 /*Ciclo for para adicionar a todas as colunas o evento dragover. Este evento vai verificar qual o elemento 
 que tem a class drag e quando este elemento passar por cima da coluna vai fazer o append child desta div nela
 e vai mudar o atributo column do objeto task para quando a página for atualizada as tarefas serem impressas
 na coluna em que estavam anteriormente*/
-
-for (let taskList of taskLists) {
-   taskList.addEventListener("dragover", function (e) {
-      e.preventDefault();
-      const draggable = document.querySelector(".drag");
-      taskList.appendChild(draggable);
-
-      for (let task of tasks) {
-         if (draggable.id == task.id) {
-            task.column = this.id;
-         }
-      }
-   });
-}
 
 /*Sempre que a página é fechada ou quando o utilizador muda de página a array das tarefas é guardada em localStorage */
 
@@ -104,13 +106,12 @@ já funcionou desta forma */
 
 for (let btn of buttons) {
    btn.addEventListener("click", function () {
-      for (let i = 0; i < tasks.length; i++) {
+      let validate = false;
+      for (let i = 0; i < tasks.length && validate == false; i++) {
          if (tasks[i].id == this.parentNode.id) {
             sessionStorage.setItem("taskType", "edit");
-            sessionStorage.setItem("task_object", JSON.stringify(tasks[i]));
-            setTimeout(() => {
-               i = tasks.length;
-            }, 0);
+            sessionStorage.setItem("task_id", this.parentNode.id);
+            validate = true;
          }
       }
       window.location.href = "task.html";
@@ -144,8 +145,16 @@ function printTasks(tasks) {
       task_div.classList.add("task");
       taskCreationAddEvents(task_div);
       task_div.setAttribute("draggable", "true");
-      task_div.style.backgroundColor = tasks[i].color;
-      task_div.style.color = fontColorRGB(tasks[i].color);
+
+      if (tasks[i].priority == LOW) {
+         task_div.style.backgroundColor = "#1eaa28";
+      } else if (tasks[i].priority == MEDIUM) {
+         task_div.style.backgroundColor = "#fbff00";
+      } else if (tasks[i].priority == HIGH) {
+         task_div.style.backgroundColor = "#e70000";
+      }
+
+      task_div.style.color = fontColorRGB(task_div.style.backgroundColor);
 
       const task_title = document.createElement("div");
       task_title.classList.add("task_title");
@@ -155,26 +164,26 @@ function printTasks(tasks) {
       const task_btn = document.createElement("button");
       task_btn.innerHTML = "&#9998;";
       task_btn.classList.add("task_btn");
-      task_btn.style.color = fontColorRGB(tasks[i].color);
+      task_btn.style.color = fontColorRGB(task_div.style.backgroundColor);
 
       addEventsBeforeDrag(task_btn, task_div);
 
       const task_btnDelete = document.createElement("button");
       task_btnDelete.innerHTML = "&#128465;";
       task_btnDelete.classList.add("delete_btn");
-      task_btnDelete.style.color = fontColorRGB(tasks[i].color);
+      task_btnDelete.style.color = fontColorRGB(task_div.style.backgroundColor);
 
       addEventsBeforeDrag(task_btnDelete, task_div);
 
       task_div.appendChild(task_btnDelete);
       task_div.appendChild(task_btn);
 
-      if (tasks[i].column == "list1") {
-         document.querySelector("#list1").appendChild(task_div);
-      } else if (tasks[i].column == "list2") {
-         document.querySelector("#list2").appendChild(task_div);
-      } else if (tasks[i].column == "list3") {
-         document.querySelector("#list3").appendChild(task_div);
+      if (tasks[i].state == "toDo") {
+         document.querySelector("#toDo").appendChild(task_div);
+      } else if (tasks[i].state == "doing") {
+         document.querySelector("#doing").appendChild(task_div);
+      } else if (tasks[i].state == "done") {
+         document.querySelector("#done").appendChild(task_div);
       }
    }
 }
@@ -197,7 +206,7 @@ function taskCreationAddEvents(task_div) {
    /*Evento que muda a cor da div da tarefa quando esta começa a ser arrastada. Também adiciona a class drag a esta div.
    Guarda-se a cor original da div para podermos ir buscá-la quando esta deixar de ser arrastada */
    task_div.addEventListener("dragstart", function () {
-      localStorage.setItem("drag_backgroundColor", task_div.style.backgroundColor);
+      sessionStorage.setItem("drag_backgroundColor", task_div.style.backgroundColor);
       task_div.classList.add("drag");
       task_div.style.backgroundColor = "#bebebe";
       task_div.style.color = "#bebebe";
@@ -207,18 +216,10 @@ function taskCreationAddEvents(task_div) {
    Assim quando a página é atualizada as tarefas são mostradas exatamente pela mesma ordem que o utilizador deixou. 
    Também é removida a class drag da div as cores desta voltam às originais antes dela começar a ser arrastada */
    task_div.addEventListener("dragend", function () {
-      for (let i = 0; i < tasks.length; i++) {
-         if (this.id == tasks[i].id) {
-            tasks.push(tasks[i]);
-            tasks.splice(i, 1);
-            break;
-         }
-      }
-
       task_div.classList.remove("drag");
 
-      task_div.style.backgroundColor = localStorage.getItem("drag_backgroundColor");
-      task_div.style.color = fontColorRGB(localStorage.getItem("drag_backgroundColor"));
+      task_div.style.backgroundColor = sessionStorage.getItem("drag_backgroundColor");
+      task_div.style.color = fontColorRGB(sessionStorage.getItem("drag_backgroundColor"));
    });
 
    /*Os botões de delete e de edit das tasks apenas são mostrados quando o cursor passa por cima da div*/
@@ -236,29 +237,17 @@ function taskCreationAddEvents(task_div) {
 /*Função para adicionar os eventos de hover e active ao butão btn consoante a cor da task_div */
 function addEventsBeforeDrag(btn, task_div) {
    btn.addEventListener("mouseenter", function () {
-      for (let task of tasks) {
-         if (task_div.id == task.id) {
-            const color = rgbColor(task.color, -15, -15, -15);
-            btn.style.backgroundColor = color;
-         }
-      }
+      const color = rgbColor(task_div.style.backgroundColor, -15, -15, -15);
+      btn.style.backgroundColor = color;
    });
 
    btn.addEventListener("mouseleave", function () {
-      for (let task of tasks) {
-         if (task_div.id == task.id) {
-            btn.style.backgroundColor = task.color;
-         }
-      }
+      btn.style.backgroundColor = task_div.style.backgroundColor;
    });
 
    btn.addEventListener("mousedown", function () {
-      for (let task of tasks) {
-         if (task_div.id == task.id) {
-            const color = rgbColor(task.color, -30, -30, -30);
-            this.style.backgroundColor = color;
-         }
-      }
+      const color = rgbColor(task_div.style.backgroundColor, -30, -30, -30);
+      this.style.backgroundColor = color;
    });
 }
 
@@ -273,6 +262,20 @@ function writeDate() {
 
    // Insere no HTML
    document.getElementById("date").innerHTML = dateTimeString;
+}
+
+async function getTasks(username) {
+   let response = await fetch("http://localhost:8080/project_backend/rest/tasks", {
+      method: "GET",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+      },
+   });
+
+   let tasks = await response.json();
+   return tasks;
 }
 
 async function getUser(username) {
