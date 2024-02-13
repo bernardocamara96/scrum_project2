@@ -1179,7 +1179,7 @@ label {
    align-items: center;
    position: absolute;
    top: 45%;
-   left: 60%;
+   left: 55%;
    transform: translate(-50%, -50%);
 }
 .edit_photo,
@@ -1199,14 +1199,13 @@ label {
    grid-column-gap: 20px; /* Espaço entre as colunas */
 }
 .confirm_profile {
-   margin-top: 20px;
-   background-color: var(--blue);
-   transform: translate(-44%, 125%);
+   background-color: var(--white);
+   transform: translate(-51%, 138%);
 }
 .btn_save, .btn_cancel {
    background-color: var(--white);
    height: 50px;
-   width: 100px;
+   width: 247px;
    text-align: center;
 }
 .change_photo {
@@ -1245,5 +1244,8 @@ label {
    cursor: pointer;
    background:none;
    border: none;
+}
+#username_edit{
+   font-size: 18px;
 }
 

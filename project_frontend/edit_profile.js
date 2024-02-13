@@ -28,10 +28,10 @@ const viewPhone = document.getElementById("edit_phone");
 // Verifica se o nome de usuário está armazenado no localStorage
 if (username !== null) {
    // Exibe o nome de usuário no elemento HTML com id "username"
-   document.getElementById("username").textContent = username;
+   document.getElementById("username_edit").textContent = username;
 } else {
    // Caso o nome de usuário não esteja armazenado, exibe uma mensagem padrão
-   document.getElementById("username").textContent = "Username not found";
+   document.getElementById("username_edit").textContent = "Username not found";
 }
 
 //action Listenner para o botao Cancel
@@ -55,9 +55,7 @@ function isValidURL(url) {
 
 const imageModal = document.getElementById("edit_photo");
 edit_photoLabel.addEventListener("change", function () {
-   if (isValidURL(edit_photoLabel.value)) {
       imageModal.src = edit_photoLabel.value;
-   } else imageModal.src = "user.png";
 });
 
 //action listenner para o botao save da foto
@@ -65,9 +63,16 @@ document.querySelector("#edit_confirmPhoto").addEventListener("click", function 
    background.style.visibility = "hidden";
    modalPhoto.style.visibility = "hidden";
    const newPhoto = document.querySelector("#edit_photoLabel").value;
+   const validURL = isValidURL(newPhoto);
+   if(validURL){
    updatePhoto(username, password, newPhoto);
    console.log(edit_photo.src);
+   }
+   else{
+      alert("Invalid Image URL");
+   }
 });
+
 
 
 // Variáveis de controle para cada campo editável
@@ -108,7 +113,7 @@ function saveChanges() {
       viewpassword.value = newPassword;
    }
 
-   if (emailEdited) {
+   else if (emailEdited) {
       const newEmail = document.getElementById('edit_email').value;
       if(isValidEmail(newEmail)) {
       updateEmail(username, password, newEmail);
@@ -117,17 +122,18 @@ function saveChanges() {
       }
    
    }
-   if (firstNameEdited) {
+   else if (firstNameEdited) {
       const newFirstName = document.getElementById('edit_firstName').value;
       updateFirstName(username, password, newFirstName);
       console.log(newFirstName);
    }
-   if(lastNameEdited) {
+   else if(lastNameEdited) {
       const newLastName = document.getElementById('edit_lastName').value;
       updateLastName(username, password, newLastName);
       console.log(newLastName);
 
-   }if(phoneEdited) {
+   }
+   else if(phoneEdited) {
       const newPhone = document.getElementById('edit_phone').value;
       if(isValidPhoneNumber(newPhone)){
       updatePhoneNumber(username, password, newPhone);
@@ -135,6 +141,10 @@ function saveChanges() {
          alert("Invalid phone number");
       }
    
+   }
+   else{
+      alert("Please fill one of the following fields");
+      console.log("nao chegou aqui");
    }
 
    // Reinicie as variáveis de controle
@@ -152,7 +162,7 @@ const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", function(){
  saveChanges();
  console.log(user);
- //window.location.href = "scrum.html";
+
 })
 
 async function getUser(username, pass) {

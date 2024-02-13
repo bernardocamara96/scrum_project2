@@ -114,7 +114,7 @@ public class UserService {
         if(updateUser != null){
             return Response.status(200).entity(updateUser).build();
         }else{
-            return Response.status(404).entity("User with username " + username + "not found").build();
+            return Response.status(404).entity("not found").build();
         }
     }
     @PUT
@@ -125,7 +125,7 @@ public class UserService {
         if(fieldChanged){
             return Response.status(200).entity("Password changed with successfuly").build();
         }else{
-            return Response.status(404).entity("User with username " + username + "not found").build();
+            return Response.status(404).entity("not found").build();
         }
 
     }
@@ -138,7 +138,7 @@ public class UserService {
         if(fieldChanged){
             return Response.status(200).entity("Email changed with successfuly").build();
         }else{
-            return Response.status(404).entity("Email already exists").build();
+            return Response.status(404).entity("not found").build();
         }
 
     }
@@ -164,7 +164,6 @@ public class UserService {
             }else{
                 return Response.status(404).entity("not found").build();
             }
-
     }
 
     @PUT
