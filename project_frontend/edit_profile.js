@@ -104,12 +104,14 @@ function saveChanges() {
       const newPassword = document.getElementById('edit_password').value;
       // Chame a função para atualizar a senha no backend
       updatePassword(username, newPassword);
+      viewpassword.value = newPassword;
    }
 
    if (emailEdited) {
       const newEmail = document.getElementById('edit_email').value;
+
+      updateEmail(username, password, newEmail);
    
-      updateEmail(username, newEmail);
    }
    if (firstNameEdited) {
       const newFirstName = document.getElementById('edit_firstName').value;
@@ -204,14 +206,17 @@ async function updatePassword(username, newPassword) {
    });
 }
 
-async function updateEmail(username, newEmail) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail/" + username, {
+async function updateEmail(username, pass, newEmail) {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail/"  {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
+         username: username,
+         pass:pass,
+         newEmail: newEmail
       },
-      body: JSON.stringify({ newEmail: newEmail }),
+      
    }).then(function (response) {
       if (response.status === 200) {
          alert("Email updated  successfully :)");

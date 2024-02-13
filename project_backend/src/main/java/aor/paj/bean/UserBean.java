@@ -204,16 +204,15 @@ public class UserBean {
 
         return fieldChanged;
     }
-    public boolean updateEmail(String username, String email) {
+    public boolean updateEmail(String username, String password, String email) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++) {
-            User u = users.get(i);
+            User u = getUser(username, password);
             boolean emailAlreadyExists = emailExists(email);
-            if (u.getUsername().equals(username) && !emailAlreadyExists) {
+            if (u !=null && !emailAlreadyExists) {
                     u.setEmail(email);
                     writeIntoJsonFile();
                     fieldChanged = true;
-                }
+
         }
         return fieldChanged;
     }

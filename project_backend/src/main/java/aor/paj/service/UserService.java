@@ -131,10 +131,10 @@ public class UserService {
     }
 
     @PUT
-    @Path("/updateEmail/{username}")
+    @Path("/updateEmail/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmail(@PathParam("username") String username, @QueryParam("email") String email){
-        boolean fieldChanged = userBean.updateEmail(username, email);
+    public Response updateEmail(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("email") String email){
+        boolean fieldChanged = userBean.updateEmail(username, password, email);
         if(fieldChanged){
             return Response.status(200).entity("Email changed with successfuly").build();
         }else{
