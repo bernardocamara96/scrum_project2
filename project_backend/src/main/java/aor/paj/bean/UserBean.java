@@ -48,7 +48,7 @@ public class UserBean {
         writeIntoJsonFile();
     }
 
-    public Task getTask(User user, int id){
+    public Task getTask(User user, long id){
         Task taskRequested=null;
         ArrayList<Task> tasks=user.getTasks();
         for (int i=0;i<tasks.size() && taskRequested==null;i++){
@@ -159,6 +159,7 @@ public class UserBean {
         user.setToDo_color(toDo_color);
         user.setDoing_color(doing_color);
         user.setDone_color(done_color);
+        writeIntoJsonFile();
     }
 
     public User validateLogin(String username, String password) {

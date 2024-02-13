@@ -8,6 +8,10 @@ const username = sessionStorage.getItem("username");
 const pass = sessionStorage.getItem("pass");
 let priority_checked = 100;
 
+if (username == null || pass == null) {
+   window.location.href = "login.html";
+}
+
 writeDate();
 
 // Executa a função em intervalos de 1 segundo para atualizar a data
@@ -23,7 +27,28 @@ getUser(username, pass).then((result) => {
 é mostrado o botão de delete e o título da form é Task Edit, caso contrário os campos são deixados sem nada, o botão 
 de delete não é mostrado e o título da forma é Task Creation*/
 if (task_type == "edit") {
+   let task_id = sessionStorage.getItem("task_id");
+   document.querySelector("#task_creationTitle").textContent = "Task Edit";
    document.querySelector("#task_delete").style.display = "inline-block";
+   getTask(username, pass, task_id).then((result) => {
+      title_txt.value = result.title;
+      description_txt.value = result.description;
+      initial_date.value = result.initialDate;
+      end_date.value = result.endDate;
+      priority_checked = result.priority;
+      for (let i = 0; i < priority_array.length; i++) {
+         if (priority_array[i].value == priority_checked) {
+            priority_array[i].checked = true;
+            if (i == 0) {
+               priority_color.style.backgroundColor = "#1eaa28";
+            } else if (i == 1) {
+               priority_color.style.backgroundColor = "#fbff00";
+            } else if (i == 2) {
+               priority_color.style.backgroundColor = "#e70000";
+            }
+         }
+      }
+   });
 } else {
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
@@ -37,11 +62,10 @@ vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso e
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
 document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
-      console.log(initial_date.value + " and " + end_date.value);
       if (!end_date.value == "" && !initial_date.value == "") {
          if (end_date.value > initial_date.value) {
             if (task_type == "create") {
-               const data = new Date();
+               let data = new Date();
                for (let i = 0; i < priority_array.length; i++) {
                   if (priority_array[i].checked) {
                      priority_checked = parseInt(priority_array[i].value);
@@ -65,11 +89,22 @@ document.querySelector("#task_save").addEventListener("click", function () {
                if (confirmEdit()) {
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
+                        console.log("prioridade: " + priority_array[i].value);
                         priority_checked = priority_array[i].value;
                      }
                   }
+                  let task_id = sessionStorage.getItem("task_id");
 
-                  updateTask(username);
+                  updateTask(
+                     username,
+                     pass,
+                     task_id,
+                     title_txt.value,
+                     description_txt.value,
+                     initial_date.value,
+                     end_date.value,
+                     priority_checked
+                  );
 
                   window.location.href = "scrum.html";
                }
@@ -93,12 +128,10 @@ for (let i = 0; i < priority_array.length; i++) {
    } else if (i == 1) {
       priority_array[i].addEventListener("click", function () {
          priority_color.style.backgroundColor = "#fbff00";
-         console.log(priority_array[i].value);
       });
    } else if (i == 2) {
       priority_array[i].addEventListener("click", function () {
          priority_color.style.backgroundColor = "#e70000";
-         console.log(priority_array[i].value);
       });
    }
 }
@@ -155,6 +188,23 @@ function writeDate() {
 }
 
 async function updateTask(username, pass, id, title, description, initialDate, endDate, priority) {
+   console.log(
+      username +
+         " " +
+         pass +
+         " " +
+         id +
+         " " +
+         title +
+         " " +
+         description +
+         " " +
+         initialDate +
+         " " +
+         endDate +
+         " " +
+         priority
+   );
    await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
       method: "PUT",
       headers: {
@@ -190,7 +240,7 @@ async function addTask(username_value, pass, task) {
       body: JSON.stringify(task),
    }).then(function (response) {
       if (response.status == 200) {
-         alert("activity is added successfully :)");
+         alert("task is added successfully :)");
       } else {
          alert("something went wrong :(");
       }
@@ -214,4 +264,23 @@ async function getUser(username, pass) {
 
    let user1 = await response.json();
    return user1;
+}
+
+async function getTask(username, pass, id) {
+   let response = await fetch(
+      "http://localhost:8080/project_backend/rest/tasks/" + id,
+
+      {
+         method: "GET",
+         headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            username: username,
+            pass: pass,
+         },
+      }
+   );
+
+   let task = await response.json();
+   return task;
 }
