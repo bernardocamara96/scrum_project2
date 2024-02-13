@@ -13,15 +13,15 @@ const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
 
+if (username == null || pass == null) {
+   window.location.href = "login.html";
+}
+
 getUser(username, pass).then((result) => {
    user = result;
    firstName_txt.textContent = user.firstName;
    user_img.src = user.imgURL;
    colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
-   document.querySelector("#background_color").value = user.background_color;
-   document.querySelector("#toDo_color").value = user.toDo_color;
-   document.querySelector("#doing_color").value = user.doing_color;
-   document.querySelector("#done_color").value = user.done_color;
 });
 
 getTasks(username, pass).then((result) => {
@@ -41,6 +41,35 @@ getTasks(username, pass).then((result) => {
          }
       });
    }
+   const delete_btns = document.querySelectorAll(".delete_btn");
+   const buttons = document.querySelectorAll(".task_btn");
+
+   for (let btn of buttons) {
+      btn.addEventListener("click", function () {
+         let validate = false;
+         for (let i = 0; i < tasks.length && validate == false; i++) {
+            if (tasks[i].id == this.parentNode.id) {
+               sessionStorage.setItem("taskType", "edit");
+               sessionStorage.setItem("task_id", this.parentNode.id);
+               validate = true;
+            }
+         }
+         window.location.href = "task.html";
+      });
+   }
+
+   for (let btn of delete_btns) {
+      btn.addEventListener("click", function () {
+         if (confirm("Are you sure you want to delete this task?")) {
+            for (let i = 0; i < tasks.length; i++) {
+               if (tasks[i].id == this.parentNode.id) {
+                  deleteTask(username, pass, tasks[i].id);
+                  this.parentNode.remove();
+               }
+            }
+         }
+      });
+   }
 });
 
 writeDate();
@@ -49,7 +78,7 @@ writeDate();
 setInterval(writeDate, 1000);
 
 document.querySelector("#logout").addEventListener("click", function () {
-   localStorage.setItem("username", "");
+   sessionStorage.clear();
    window.location.href = "login.html";
 });
 
@@ -94,49 +123,21 @@ document.querySelector("#background").addEventListener("click", function () {
 });
 
 document.querySelector("#btn_settings").addEventListener("click", function () {
+   document.querySelector("#background_color").value = rgbStringToHex(
+      document.querySelector("#body_color").style.backgroundColor
+   );
+   document.querySelector("#toDo_color").value = rgbStringToHex(
+      document.querySelector("#column1").style.backgroundColor
+   );
+   document.querySelector("#doing_color").value = rgbStringToHex(
+      document.querySelector("#column2").style.backgroundColor
+   );
+   document.querySelector("#done_color").value = rgbStringToHex(
+      document.querySelector("#column3").style.backgroundColor
+   );
    document.querySelector("#modal_settings").style.visibility = "visible";
    document.querySelector("#background").style.visibility = "visible";
 });
-
-const delete_btns = document.querySelectorAll(".delete_btn");
-const buttons = document.querySelectorAll(".task_btn");
-
-/*Ciclo for para adicionar a todos os botões de editar a tarefa o evento de clicar. Neste evento são guardados
-em localStorage o índice da array de tarefas correspondente à tarefa clicada e o objeto da tarefa. 
-O setTimeout foi inserido apenas pela razão de que ele ao ler a linha de código i=tasks.lenght continuava dentro do ciclo 
-por mais um índice. Ou seja a variável i não estava a guardar o valor dos tasks.lenght logo. Apesar de meter a 0 a linha 
-já funcionou desta forma */
-
-for (let btn of buttons) {
-   btn.addEventListener("click", function () {
-      let validate = false;
-      for (let i = 0; i < tasks.length && validate == false; i++) {
-         if (tasks[i].id == this.parentNode.id) {
-            sessionStorage.setItem("taskType", "edit");
-            sessionStorage.setItem("task_id", this.parentNode.id);
-            validate = true;
-         }
-      }
-      window.location.href = "task.html";
-   });
-}
-
-/*Ciclo for para adicionar o evento de clicar a todos os botões delete. Neste evento é eliminado da array a tarefa com
-o id igual ao element div que está a ser clicado. O elemento div também é eliminado da coluna em que está */
-
-for (let btn of delete_btns) {
-   btn.addEventListener("click", function () {
-      if (confirm("Are you sure you want to delete this task?")) {
-         for (let i = 0; i < tasks.length; i++) {
-            if (tasks[i].id == this.parentNode.id) {
-               tasks.splice(i, 1);
-               localStorage.setItem("tasks", JSON.stringify(tasks));
-               this.parentNode.remove();
-            }
-         }
-      }
-   });
-}
 
 /*Função para fazer a impressão inicial das tarefas, quando a página é inicializada. As tarefas vão ser impressas
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
@@ -302,7 +303,6 @@ async function getUser(username, pass) {
 }
 
 async function updateTaskState(username, pass, id, state) {
-   console.log(username + " " + id + " " + state);
    await fetch("http://localhost:8080/project_backend/rest/tasks/state", {
       method: "PUT",
       headers: {
@@ -312,6 +312,17 @@ async function updateTaskState(username, pass, id, state) {
          pass: pass,
          id: id,
          state: state,
+      },
+   });
+}
+async function deleteTask(username, pass, task_id) {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
+      method: "DELETE",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         pass: pass,
       },
    });
 }
@@ -347,7 +358,7 @@ document.querySelector("#modal_cancel2").addEventListener("click", function () {
 
 //Este evento ao ser acionado muda todas as cores da aplicação para as cores originais desta
 document.querySelector("#reset_settings").addEventListener("click", function () {
-   saveColors(username, "#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
+   saveColors(username, pass, "#172b4c", "#f1f2f4", "#f1f2f4", "#f1f2f4");
 
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
@@ -486,4 +497,22 @@ function rgbColor(RGBcolor, redChange, greenChange, blueChange) {
    const colorRGB = "rgb(" + red + ", " + green + ", " + blue + ")";
 
    return colorRGB;
+}
+
+function rgbStringToHex(rgbString) {
+   // Extract the numeric values from the RGB string
+   const rgbValues = rgbString.match(/\d+/g);
+
+   if (!rgbValues || rgbValues.length !== 3) {
+      // Invalid RGB string format
+      return null;
+   }
+
+   // Convert each component to its hexadecimal representation
+   const redHex = parseInt(rgbValues[0], 10).toString(16).padStart(2, "0");
+   const greenHex = parseInt(rgbValues[1], 10).toString(16).padStart(2, "0");
+   const blueHex = parseInt(rgbValues[2], 10).toString(16).padStart(2, "0");
+
+   // Concatenate the hex values and return the result
+   return `#${redHex}${greenHex}${blueHex}`;
 }

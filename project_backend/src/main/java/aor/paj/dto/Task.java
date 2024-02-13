@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @XmlRootElement
 public class Task {
     @XmlElement
-    private int id;
+    private long id;
     @XmlElement
     private String title;
     @XmlElement
@@ -59,11 +59,11 @@ public class Task {
         this.state = state;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

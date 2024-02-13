@@ -48,7 +48,19 @@ public class UserBean {
         writeIntoJsonFile();
     }
 
-    public Task getTask(User user, int id){
+    public boolean removeTask(User user,long id) {
+        boolean taskRemoved=false;
+        ArrayList<Task> tasksRequested=user.getTasks();
+        for (int i=0;i<tasksRequested.size() && !taskRemoved;i++) {
+            if (tasksRequested.get(i).getId() == id) {
+                tasksRequested.remove(i);
+                taskRemoved=true;
+            }
+        }
+        writeIntoJsonFile();
+        return taskRemoved;
+    }
+    public Task getTask(User user, long id){
         Task taskRequested=null;
         ArrayList<Task> tasks=user.getTasks();
         for (int i=0;i<tasks.size() && taskRequested==null;i++){
@@ -159,6 +171,7 @@ public class UserBean {
         user.setToDo_color(toDo_color);
         user.setDoing_color(doing_color);
         user.setDone_color(done_color);
+        writeIntoJsonFile();
     }
 
     public User validateLogin(String username, String password) {
@@ -193,84 +206,72 @@ public class UserBean {
 
         return currentUser;
     }
-    public boolean updatePassword(String username, String password) {
+    public boolean updatePassword(String username, String password, String newPassword) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
-                u.setPassword(password);
+            User u = getUser(username, password);
+            if(u!=null) {
+                u.setPassword(newPassword);
                 writeIntoJsonFile();
-                fieldChanged=true;
-
+                fieldChanged = true;
             }
-        }
+
         return fieldChanged;
     }
-    public boolean updateEmail(String username, String email) {
+    public boolean updateEmail(String username, String password, String email) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++) {
-            User u = users.get(i);
+        boolean validEmail = isValidEmail(email);
+            User u = getUser(username, password);
             boolean emailAlreadyExists = emailExists(email);
-            if (u.getUsername().equals(username) && !emailAlreadyExists) {
+            if (u !=null && validEmail && !emailAlreadyExists) {
                     u.setEmail(email);
                     writeIntoJsonFile();
                     fieldChanged = true;
-                }
         }
         return fieldChanged;
     }
 
     public boolean emailExists(String email){
         boolean emailExists = false;
-        if(email==null){
-
-        }
-        for(User u: users){
-            String userEmail= u.getEmail();
-            if(userEmail!= null && userEmail.equals(email)){
-                emailExists = true;
+            for (User u : users) {
+                String userEmail = u.getEmail();
+                if (userEmail != null && userEmail.equals(email)) {
+                    emailExists = true;
+                }
             }
-        }
         return emailExists;
     }
 
-    public boolean updateFirstName(String username, String firstName) {
+    public boolean updateFirstName(String username, String password, String firstName) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
+
+            User u = getUser(username, password);
+            if(u!=null){
                 u.setFirstName(firstName);
                 writeIntoJsonFile();
                 fieldChanged=true;
-
-            }
         }
         return fieldChanged;
     }
-    public boolean updateLastName(String username, String lastName) {
+    public boolean updateLastName(String username, String password, String lastName) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
+            User u = getUser(username, password);
+            if(u!= null){
                 u.setLastName(lastName);
                 writeIntoJsonFile();
                 fieldChanged=true;
-
-            }
         }
         return fieldChanged;
     }
 
-    public boolean updatePhoneNumber(String username, String phoneNumber) {
+    public boolean updatePhoneNumber(String username, String password, String phoneNumber) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++) {
-            User u = users.get(i);
+            User u = getUser(username, password);
             boolean phoneExists1 = phoneExists(phoneNumber);
-            if (u.getUsername().equals(username) && !phoneExists1) {
-                u.setEmail(phoneNumber);
+            boolean phoneValid=isValidPhoneNumber(phoneNumber);
+            if (u!=null && !phoneExists1 && phoneValid) {
+                u.setPhoneNumber(phoneNumber);
                 writeIntoJsonFile();
                 fieldChanged = true;
-            }
         }
         return fieldChanged;
     }

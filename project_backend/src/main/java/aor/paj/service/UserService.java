@@ -109,8 +109,8 @@ public class UserService {
     @PUT
     @Path("/updatePhoto")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("pass")String pass,@HeaderParam("newPhoto") String newPhoto){
-        User updateUser = userBean.updatePhoto(username, pass,newPhoto);
+    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("password")String password,@HeaderParam("newPhoto") String newPhoto){
+        User updateUser = userBean.updatePhoto(username, password,newPhoto);
         if(updateUser != null){
             return Response.status(200).entity(updateUser).build();
         }else{
@@ -118,10 +118,10 @@ public class UserService {
         }
     }
     @PUT
-    @Path("/updatePassword/{username}")
+    @Path("/updatePassword")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePassword(@PathParam("username") String username, @QueryParam("password") String password){
-        boolean fieldChanged = userBean.updatePassword(username, password);
+    public Response updatePassword(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("newPassword") String newPassword){
+        boolean fieldChanged = userBean.updatePassword(username, password, newPassword);
         if(fieldChanged){
             return Response.status(200).entity("Password changed with successfuly").build();
         }else{
@@ -131,10 +131,10 @@ public class UserService {
     }
 
     @PUT
-    @Path("/updateEmail/{username}")
+    @Path("/updateEmail")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmail(@PathParam("username") String username, @QueryParam("email") String email){
-        boolean fieldChanged = userBean.updateEmail(username, email);
+    public Response updateEmail(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("email") String email){
+        boolean fieldChanged = userBean.updateEmail(username, password, email);
         if(fieldChanged){
             return Response.status(200).entity("Email changed with successfuly").build();
         }else{
@@ -143,10 +143,10 @@ public class UserService {
 
     }
     @PUT
-    @Path("/updateFirstName/{username}")
+    @Path("/updateFirstName")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateFirstName(@PathParam("username") String username, @QueryParam("firstName") String firstName){
-        boolean fieldChanged = userBean.updateFirstName(username, firstName);
+    public Response updateFirstName(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("firstName") String firstName){
+        boolean fieldChanged = userBean.updateFirstName(username, password,firstName);
         if(fieldChanged){
             return Response.status(200).entity("First Name changed with successfuly").build();
         }else{
@@ -155,10 +155,10 @@ public class UserService {
 
     }
     @PUT
-    @Path("/updateLastName/{username}")
+    @Path("/updateLastName")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateLastName(@PathParam("username") String username, @QueryParam("lastName") String lastName){
-           boolean fieldChanged = userBean.updateLastName(username, lastName);
+    public Response updateLastName(@HeaderParam("username") String username, @HeaderParam( "password") String password, @HeaderParam("lastName") String lastName){
+           boolean fieldChanged = userBean.updateLastName(username, password, lastName);
             if(fieldChanged){
                 return Response.status(200).entity("Last Name changed with successfuly").build();
             }else{
@@ -168,10 +168,10 @@ public class UserService {
     }
 
     @PUT
-    @Path("/updatePhoneNumber/{username}")
+    @Path("/updatePhoneNumber")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoneNumber(@PathParam("username") String username, @QueryParam("phonenumber") String phonenumber){
-        boolean fieldChanged = userBean.updatePhoneNumber(username, phonenumber);
+    public Response updatePhoneNumber(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("phonenumber") String phonenumber){
+        boolean fieldChanged = userBean.updatePhoneNumber(username, password, phonenumber);
         if(fieldChanged){
             return Response.status(200).entity("Phone Number  changed with successfuly").build();
         }else{
