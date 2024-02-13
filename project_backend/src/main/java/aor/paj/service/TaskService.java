@@ -61,9 +61,9 @@ public class TaskService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate initialDateFormated = LocalDate.parse(initialDate, formatter);
                 LocalDate endDateFormated = LocalDate.parse(endDate, formatter);
-
-                if (endDateFormated.isBefore(initialDateFormated)) {
-                    return Response.status(400).entity("The end date can't be before start date").build();
+                LocalDate currentDate=LocalDate.now();
+                if (endDateFormated.isBefore(initialDateFormated) || initialDateFormated.isBefore(currentDate)  ) {
+                    return Response.status(400).entity("Entered wrong date").build();
                 } else {
                     if (priority != 300 && priority != 200 && priority != 100) {
                         return Response.status(400).entity("This priority isn't valid").build();
@@ -108,7 +108,8 @@ public class TaskService {
             return Response.status(404).entity("This user doesn't exist").build();
         }
         else {
-            if(!task.getTitle().equals("") && task.getEndDate().isAfter(task.getInitialDate())) {
+            LocalDate currentDate=LocalDate.now();
+            if(!task.getTitle().equals("") && task.getEndDate().isAfter(task.getInitialDate()) && (task.getInitialDate().isAfter(currentDate) || task.getInitialDate().isEqual(currentDate))) {
                 userBean.addTask(userRequested, task);
                 return Response.status(200).entity("Task created").build();
             }

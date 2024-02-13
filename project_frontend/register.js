@@ -20,11 +20,20 @@ form1.addEventListener("submit", function (e) {
       lastName.value != "" &&
       phone.value != ""
    ) {
-      if (isValidPhoneNumber(phone.value)) {
-         if (isValidEmail(email.value)) {
-            validateUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value);
-         } else alert("Invalid email");
-      } else alert("Invalid phone number");
+      if (firstName.value.length < 13) {
+         if (isValidPhoneNumber(phone.value)) {
+            if (isValidEmail(email.value)) {
+               validateUser(
+                  username_txt.value,
+                  password.value,
+                  email.value,
+                  firstName.value,
+                  lastName.value,
+                  phone.value
+               );
+            } else alert("Invalid email");
+         } else alert("Invalid phone number");
+      } else alert("First Name is too long");
    } else alert("All fields are required");
 });
 

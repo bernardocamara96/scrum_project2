@@ -417,15 +417,33 @@ img {
    font-weight: bold;
 }
 
+#modal {
+   position: fixed;
+   height: 430px;
+   width: 500px;
+   background-color: var(--white);
+   z-index: 3;
+   top: 45%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   border-radius: 8px;
+   visibility: hidden;
+}
+#modal_cancel {
+   margin: 5px 12px 0px 470px;
+}
+
 #modal_title {
-   height: 30px;
+   height: 22px;
    margin: 0px 30px 10px 30px;
    padding: 3px 0px 10px 7px;
    color: var(--black);
    max-height: 30px;
-   max-width: 340px;
+   max-width: 450px;
    overflow-x: auto;
    overflow-y: hidden;
+   background-color: var(--white_active);
+   border-radius: 5px;
 }
 
 #modal_description {
@@ -435,9 +453,22 @@ img {
    overflow-y: auto;
    color: var(--black);
    overflow-wrap: break-word;
-   max-width: 340px;
+   max-width: 450px;
+   background-color: var(--white_active);
+   border-radius: 5px;
 }
 
+.span_date {
+   width: 50px;
+}
+#modal_dates {
+   margin-top: 20px;
+   margin-left: 15px;
+}
+
+#endDate_label {
+   margin-left: 70px;
+}
 #modal_settings {
    width: 390px;
    height: 280px;
@@ -1145,7 +1176,8 @@ label {
    box-shadow: 0px 0px 0px 0px black;
 }
 
-#register_modal, #edit_modal {
+#register_modal,
+#edit_modal {
    display: flex;
    flex-direction: column;
    height: 330px;
@@ -1159,7 +1191,8 @@ label {
    box-shadow: var(--text_shadow);
 }
 
-#register_photo, #edit_photo {
+#register_photo,
+#edit_photo {
    height: 160px;
    width: 160px;
    margin: 30px auto;
@@ -1167,7 +1200,9 @@ label {
    border-radius: 50%;
 }
 
-#register_confirmPhoto, #edit_confirmPhoto, #edit_cancelPhoto {
+#register_confirmPhoto,
+#edit_confirmPhoto,
+#edit_cancelPhoto {
    width: 261px;
    margin-top: 15px;
 }
@@ -1193,7 +1228,7 @@ label {
    border-radius: 10px;
    height: auto;
 }
-.edit_profile{
+.edit_profile {
    display: grid;
    grid-template-columns: 1fr 1fr; /* Dividir em duas colunas de largura igual */
    grid-column-gap: 20px; /* Espaço entre as colunas */
@@ -1202,7 +1237,8 @@ label {
    background-color: var(--white);
    transform: translate(-51%, 138%);
 }
-.btn_save, .btn_cancel {
+.btn_save,
+.btn_cancel {
    background-color: var(--white);
    height: 50px;
    width: 247px;
@@ -1225,27 +1261,25 @@ label {
    width: 200px;
    margin: 5px;
 }
-.descriptioLabel{
+.descriptioLabel {
    font-size: 10px;
    margin-bottom: 5px;
    font-weight: bold;
-   
 }
-#user_photo{
+#user_photo {
    border-radius: 50%;
 }
-.edit_button{
+.edit_button {
    border: none;
 }
 
-.edit_button img{
-   width:20px;
+.edit_button img {
+   width: 20px;
    height: 20px;
    cursor: pointer;
-   background:none;
+   background: none;
    border: none;
 }
 #username_edit{
    font-size: 18px;
 }
-

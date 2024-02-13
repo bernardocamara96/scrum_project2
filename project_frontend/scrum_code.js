@@ -1,7 +1,7 @@
 const username = sessionStorage.getItem("username");
 const pass = sessionStorage.getItem("pass");
 const firstName_txt = document.querySelector("#user");
-const retros = JSON.parse(localStorage.getItem("retros")) || [];
+//const retros = JSON.parse(localStorage.getItem("retros")) || [];
 const user_img = document.querySelector("#user_img");
 const column1 = document.querySelector("#column1");
 const column2 = document.querySelector("#column2");
@@ -13,60 +13,59 @@ const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
 
-if (username == null || pass == null) {
-   window.location.href = "login.html";
-}
-
 getUser(username, pass).then((result) => {
    user = result;
-   firstName_txt.textContent = user.firstName;
-   user_img.src = user.imgURL;
-   colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
-});
+   if (user == null) {
+      window.location.href = "login.html";
+   } else {
+      firstName_txt.textContent = user.firstName;
+      user_img.src = user.imgURL;
+      colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
+      getTasks(username, pass).then((result) => {
+         let tasks = result;
+         printTasks(tasks);
+         for (let taskList of taskLists) {
+            taskList.addEventListener("dragover", function (e) {
+               e.preventDefault();
+               const draggable = document.querySelector(".drag");
+               taskList.appendChild(draggable);
 
-getTasks(username, pass).then((result) => {
-   let tasks = result;
-   printTasks(tasks);
-   for (let taskList of taskLists) {
-      taskList.addEventListener("dragover", function (e) {
-         e.preventDefault();
-         const draggable = document.querySelector(".drag");
-         taskList.appendChild(draggable);
-
-         for (let task of tasks) {
-            if (draggable.id == task.id) {
-               task.state = this.id;
-               updateTaskState(username, pass, task.id, this.id);
-            }
-         }
-      });
-   }
-   const delete_btns = document.querySelectorAll(".delete_btn");
-   const buttons = document.querySelectorAll(".task_btn");
-
-   for (let btn of buttons) {
-      btn.addEventListener("click", function () {
-         let validate = false;
-         for (let i = 0; i < tasks.length && validate == false; i++) {
-            if (tasks[i].id == this.parentNode.id) {
-               sessionStorage.setItem("taskType", "edit");
-               sessionStorage.setItem("task_id", this.parentNode.id);
-               validate = true;
-            }
-         }
-         window.location.href = "task.html";
-      });
-   }
-
-   for (let btn of delete_btns) {
-      btn.addEventListener("click", function () {
-         if (confirm("Are you sure you want to delete this task?")) {
-            for (let i = 0; i < tasks.length; i++) {
-               if (tasks[i].id == this.parentNode.id) {
-                  deleteTask(username, pass, tasks[i].id);
-                  this.parentNode.remove();
+               for (let task of tasks) {
+                  if (draggable.id == task.id) {
+                     task.state = this.id;
+                     updateTaskState(username, pass, task.id, this.id);
+                  }
                }
-            }
+            });
+         }
+         const delete_btns = document.querySelectorAll(".delete_btn");
+         const buttons = document.querySelectorAll(".task_btn");
+
+         for (let btn of buttons) {
+            btn.addEventListener("click", function () {
+               let validate = false;
+               for (let i = 0; i < tasks.length && validate == false; i++) {
+                  if (tasks[i].id == this.parentNode.id) {
+                     sessionStorage.setItem("taskType", "edit");
+                     sessionStorage.setItem("task_id", this.parentNode.id);
+                     validate = true;
+                  }
+               }
+               window.location.href = "task.html";
+            });
+         }
+
+         for (let btn of delete_btns) {
+            btn.addEventListener("click", function () {
+               if (confirm("Are you sure you want to delete this task?")) {
+                  for (let i = 0; i < tasks.length; i++) {
+                     if (tasks[i].id == this.parentNode.id) {
+                        deleteTask(username, pass, tasks[i].id);
+                        this.parentNode.remove();
+                     }
+                  }
+               }
+            });
          }
       });
    }
@@ -88,9 +87,9 @@ document.querySelector("#btn_edit").addEventListener("click", function () {
    window.location.href = "edit_profile.html";
 });
 
-document.querySelector("#btn_sprint").addEventListener("click", function () {
+/*document.querySelector("#btn_sprint").addEventListener("click", function () {
    window.location.href = "retrospective.html";
-});
+});*/
 
 /*Evento de clicar no botão "+ New Task" da aplicação. Aqui é criado um objeto task. Para ser utilizado
 na página task-html. Nessa página há uma condição que ao verificar que a task não tem título 
@@ -143,6 +142,10 @@ document.querySelector("#btn_settings").addEventListener("click", function () {
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
 os eventos dos botões de delete e dos botões de edição das tarefas */
 function printTasks(tasks) {
+   document.querySelector("#toDo").innerHTML = "";
+   document.querySelector("#doing").innerHTML = "";
+   document.querySelector("#done").innerHTML = "";
+   orderTasksByPriorityAndDate(tasks);
    for (let i = 0; i < tasks.length; i++) {
       const task_div = document.createElement("div");
       task_div.id = tasks[i].id;
@@ -201,6 +204,8 @@ function taskCreationAddEvents(task_div, tasks) {
             const task_sel = tasks[i];
             document.querySelector("#modal_title").innerHTML = task_sel.title;
             document.querySelector("#modal_description").innerHTML = task_sel.description;
+            document.querySelector("#modal_startDate").innerHTML = task_sel.initialDate;
+            document.querySelector("#modal_endDate").innerHTML = task_sel.endDate;
             document.querySelector("#modal").style.visibility = "visible";
             document.querySelector("#background").style.visibility = "visible";
          }
@@ -221,6 +226,10 @@ function taskCreationAddEvents(task_div, tasks) {
    Também é removida a class drag da div as cores desta voltam às originais antes dela começar a ser arrastada */
    task_div.addEventListener("dragend", function () {
       task_div.classList.remove("drag");
+      getTasks(username, pass).then((result) => {
+         tasks = result;
+         printTasks(tasks);
+      });
 
       task_div.style.backgroundColor = sessionStorage.getItem("drag_backgroundColor");
       task_div.style.color = fontColorRGB(sessionStorage.getItem("drag_backgroundColor"));
@@ -298,8 +307,12 @@ async function getUser(username, pass) {
       }
    );
 
-   let user1 = await response.json();
-   return user1;
+   try {
+      let user1 = await response.json();
+      return user1;
+   } catch (error) {
+      return null;
+   }
 }
 
 async function updateTaskState(username, pass, id, state) {
@@ -325,6 +338,32 @@ async function deleteTask(username, pass, task_id) {
          pass: pass,
       },
    });
+}
+
+function orderTasksByPriorityAndDate(tasks) {
+   tasks.sort((a, b) => {
+      if (a.priority > b.priority) {
+         return -1;
+      } else if (a.priority < b.priority) {
+         return 1;
+      }
+
+      if (a.initialDate < b.initialDate) {
+         return -1;
+      } else if (a.initialDate > b.initialDate) {
+         return 1;
+      }
+
+      if (a.endDate < b.endDate) {
+         return -1;
+      } else if (a.endDate > b.endDate) {
+         return 1;
+      }
+
+      return 0;
+   });
+
+   return tasks;
 }
 
 //////CORES///////////////////////////////////////////////////////////////////////////////////////

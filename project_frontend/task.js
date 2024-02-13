@@ -18,9 +18,13 @@ writeDate();
 setInterval(writeDate, 1000);
 
 getUser(username, pass).then((result) => {
-   document.querySelector("#user").textContent = result.firstName;
-   document.querySelector("#body_color").style.backgroundColor = result.background_color;
-   document.querySelector("#user_img").src = result.imgURL;
+   if (result == null) {
+      window.location.href = "login.html";
+   } else {
+      document.querySelector("#user").textContent = result.firstName;
+      document.querySelector("#body_color").style.backgroundColor = result.background_color;
+      document.querySelector("#user_img").src = result.imgURL;
+   }
 });
 
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
@@ -63,54 +67,60 @@ vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso e
 document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
       if (!end_date.value == "" && !initial_date.value == "") {
-         if (end_date.value > initial_date.value) {
-            if (task_type == "create") {
-               let data = new Date();
-               for (let i = 0; i < priority_array.length; i++) {
-                  if (priority_array[i].checked) {
-                     priority_checked = parseInt(priority_array[i].value);
-                  }
-               }
-
-               let task = {
-                  id: data.getTime(),
-                  title: title_txt.value,
-                  description: description_txt.value,
-                  initialDate: initial_date.value,
-                  endDate: end_date.value,
-                  priority: priority_checked,
-                  state: "toDo",
-               };
-
-               addTask(username, pass, task);
-
-               window.location.href = "scrum.html";
-            } else {
-               if (confirmEdit()) {
+         let current_date = new Date();
+         current_date = current_date.toLocaleDateString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit" });
+         if (initial_date.value >= current_date) {
+            if (end_date.value > initial_date.value) {
+               if (task_type == "create") {
+                  let data = new Date();
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
-                        console.log("prioridade: " + priority_array[i].value);
-                        priority_checked = priority_array[i].value;
+                        priority_checked = parseInt(priority_array[i].value);
                      }
                   }
-                  let task_id = sessionStorage.getItem("task_id");
 
-                  updateTask(
-                     username,
-                     pass,
-                     task_id,
-                     title_txt.value,
-                     description_txt.value,
-                     initial_date.value,
-                     end_date.value,
-                     priority_checked
-                  );
+                  let task = {
+                     id: data.getTime(),
+                     title: title_txt.value,
+                     description: description_txt.value,
+                     initialDate: initial_date.value,
+                     endDate: end_date.value,
+                     priority: priority_checked,
+                     state: "toDo",
+                  };
+
+                  addTask(username, pass, task);
 
                   window.location.href = "scrum.html";
+               } else {
+                  if (confirmEdit()) {
+                     for (let i = 0; i < priority_array.length; i++) {
+                        if (priority_array[i].checked) {
+                           console.log("prioridade: " + priority_array[i].value);
+                           priority_checked = priority_array[i].value;
+                        }
+                     }
+                     let task_id = sessionStorage.getItem("task_id");
+
+                     updateTask(
+                        username,
+                        pass,
+                        task_id,
+                        title_txt.value,
+                        description_txt.value,
+                        initial_date.value,
+                        end_date.value,
+                        priority_checked
+                     );
+
+                     window.location.href = "scrum.html";
+                  }
                }
+            } else {
+               alert("The end date must be greater than the initial date");
             }
          } else {
-            alert("The end date must be greater than the initial date");
+            alert("The initial date must be greater than the current date");
          }
       } else {
          alert("You need to put the initial and end date");
@@ -260,9 +270,12 @@ async function getUser(username, pass) {
          },
       }
    );
-
-   let user1 = await response.json();
-   return user1;
+   try {
+      let user1 = await response.json();
+      return user1;
+   } catch (error) {
+      return null;
+   }
 }
 
 async function getTask(username, pass, id) {
