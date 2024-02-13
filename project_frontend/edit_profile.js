@@ -12,11 +12,11 @@ getUser(username, password).then((result) => {
    console.log(result);
    user = result;
    user_img.src = user.imgURL;
-   viewpassword.value = user.password;
-   viewEmail.value = user.email;
-   viewFirstName.value = user.firstName;
-   viewLastName.value = user.lastName;
-   viewPhone.value = user.phoneNumber;
+   viewpassword.placeholder = user.password;
+   viewEmail.placeholder = user.email;
+   viewFirstName.placeholder = user.firstName;
+   viewLastName.placeholder = user.lastName;
+   viewPhone.placeholder = user.phoneNumber;
 });
 
 const viewpassword = document.getElementById("edit_password");
