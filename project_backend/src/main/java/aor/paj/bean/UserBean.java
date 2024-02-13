@@ -193,17 +193,15 @@ public class UserBean {
 
         return currentUser;
     }
-    public boolean updatePassword(String username, String password) {
+    public boolean updatePassword(String username, String password, String newPassword) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
-                u.setPassword(password);
+            User u = getUser(username, password);
+            if(u!=null) {
+                u.setPassword(newPassword);
                 writeIntoJsonFile();
-                fieldChanged=true;
-
+                fieldChanged = true;
             }
-        }
+
         return fieldChanged;
     }
     public boolean updateEmail(String username, String email) {

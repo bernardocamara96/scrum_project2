@@ -1,11 +1,13 @@
 const username = sessionStorage.getItem("username");
+const password = sessionStorage.getItem("pass");
 const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo");
 
+
 let user = null;
 
-getUser(username).then((result) => {
+getUser(username, password).then((result) => {
    console.log(result);
    user = result;
    user_img.src = user.imgURL;
@@ -41,22 +43,107 @@ document.querySelector("#change_photo").addEventListener("click", function () {
    background.style.visibility = "visible";
    modalPhoto.style.visibility = "visible";
 });
+function isValidURL(url) {
+   try {
+      new URL(url);
+      return true;
+   } catch {
+      return false;
+   }
+}
+
+const imageModal = document.getElementById("edit_photo");
+edit_photoLabel.addEventListener("change", function () {
+   if (isValidURL(edit_photoLabel.value)) {
+      imageModal.src = edit_photoLabel.value;
+   } else imageModal.src = "user.png";
+});
 
 //action listenner para o botao save da foto
 document.querySelector("#edit_confirmPhoto").addEventListener("click", function () {
    background.style.visibility = "hidden";
    modalPhoto.style.visibility = "hidden";
    const newPhoto = document.querySelector("#edit_photoLabel").value;
-   user_img.src = newPhoto;
-   edit_photo.src = newPhoto;
-   updatePhoto(username, newPhoto).then(() => {
-      user.imgURL = newPhoto;
-   });
-
+   updatePhoto(username, password, newPhoto);
    console.log(edit_photo.src);
 });
 
-async function getUser(username) {
+
+// Variáveis de controle para cada campo editável
+let passwordEdited = false;
+let emailEdited = false;
+let firstNameEdited = false;
+let lastNameEdited = false;
+let phoneEdited = false;
+
+// Adiciona um evento de alteração para cada campo de entrada
+document.getElementById('edit_password').addEventListener('change', function() {
+   passwordEdited = true;
+});
+
+document.getElementById('edit_email').addEventListener('change', function() {
+   emailEdited = true;
+});
+
+document.getElementById('edit_firstName').addEventListener('change', function() {
+   firstNameEdited = true;
+});
+
+document.getElementById('edit_lastName').addEventListener('change', function() {
+   lastNameEdited = true;
+});
+
+document.getElementById('edit_phone').addEventListener('change', function() {
+   phoneEdited = true;
+});
+
+// Função para salvar as alterações
+function saveChanges() {
+   if (passwordEdited) {
+      // Salvar a nova senha
+      const newPassword = document.getElementById('edit_password').value;
+      // Chame a função para atualizar a senha no backend
+      updatePassword(username, newPassword);
+   }
+
+   if (emailEdited) {
+      const newEmail = document.getElementById('edit_email').value;
+   
+      updateEmail(username, newEmail);
+   }
+   if (firstNameEdited) {
+      const newFirstName = document.getElementById('edit_firstName').value;
+      updateFirstName(username, newFirstName);
+      console.log(newFirstName);
+   }
+   if(lastNameEdited) {
+      const newLastName = document.getElementById('edit_lastName').value;
+      updateLastName(username, newLastName);
+      console.log(newLastName);
+   }if(phoneEdited) {
+      const newPhone = document.getElementById('edit_phone').value;
+      updatePhoneNumber(username, newPhone);
+      console.log(newPhone);
+   }
+
+   // Reinicie as variáveis de controle
+   passwordEdited = false;
+   emailEdited = false;
+   firstNameEdited = false;
+   lastNameEdited = false;
+   phoneEdited = false;
+}
+
+
+//action listenner para o botao save da pagina
+
+const bntSave = document.getElementById("btn-save");
+bntSave.addEventListener("click", function(){
+ saveChanges();
+ window.location.href = "scrum.html";
+})
+
+async function getUser(username, pass) {
    let response = await fetch(
       "http://localhost:8080/project_backend/rest/users",
 
@@ -66,27 +153,30 @@ async function getUser(username) {
             Accept: "*/*",
             "Content-Type": "application/json",
             username: username,
+            pass: pass,
          },
       }
    );
 
    let user1 = await response.json();
-   console.log(user1);
    return user1;
 }
 
-async function updatePhoto(username, newPhoto) {
+async function updatePhoto(username, pass, newPhoto) {
    let response = await fetch("http://localhost:8080/project_backend/rest/users/updatePhoto", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
+         pass:pass,
          newPhoto: newPhoto,
-      },
+     },
    });
+        
    if (response.status === 200) {
       alert("User photo updated successfully. ");
+      user_img.src = newPhoto;
    } else if (response.status === 404) {
       alert("User not found");
    } else {
@@ -191,93 +281,3 @@ async function updatePhoneNumber(username, newPhoneNumber) {
    });
 }
 
-//Logica para o modalEdit
-// Selecionar os botões de edição
-const btnPassword = document.getElementById("btn_password");
-const btnEmail = document.getElementById("btn_email");
-const btnFirstName = document.getElementById("btn_firstName");
-const btnLastName = document.getElementById("btn_lastName");
-const btnPhone = document.getElementById("btn_phone");
-
-// Adicionando event listener para o botão de password
-btnPassword.addEventListener("click", function () {
-   openModal("Password");
-});
-
-// Adicionando event listener para o botão de email
-btnEmail.addEventListener("click", function () {
-   openModal("Email");
-});
-
-// Adicionando event listener para o botão de first name
-btnFirstName.addEventListener("click", function () {
-   openModal("First Name");
-});
-
-// Adicionando event listener para o botão de last name
-btnLastName.addEventListener("click", function () {
-   openModal("Last Name");
-});
-
-// Adicionando event listener para o botão de phone
-btnPhone.addEventListener("click", function () {
-   openModal("Phone");
-});
-
-// Função para abrir o modal com base no tipo de campo a ser editado
-
-function openModal(field) {
-   const modal = document.getElementById("editModal");
-   const inputField = document.getElementById("new_value");
-   // Define o texto do label no modal com base no campo que está sendo editado
-   const label = modal.querySelector("label");
-   label.textContent = "New " + field + ":";
-
-   // Abre o modal
-   modal.style.visibility = "visible";
-   // Remove event listeners antigos antes de atribuir novos
-   const confirmBtn = document.getElementById("confirmEdit");
-   const newConfirmBtn = confirmBtn.cloneNode(true);
-   confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-   newConfirmBtn.addEventListener("click", function () {
-      if (field === "Password") {
-         const newValue = inputField.value;
-         updatePassword(username, newValue).then(() => {
-            user.password = newValue;
-         });
-      } else if (field === "Email") {
-         const newValue = inputField.value;
-         updateEmail(username, newValue).then(() => {
-            user.email = newValue;
-         });
-      } else if (field === "First Name") {
-         const newValue = inputField.value;
-         updateFirstName(username, newValue).then(() => {
-            user.firstName = newValue;
-         });
-      } else if (field === "Last Name") {
-         const newValue = inputField.value;
-         updateLastName(username, newValue).then(() => {
-            user.lastName = newValue;
-         });
-      } else if (field === "Phone") {
-         const newValue = inputField.value;
-         updatePhoneNumber(username, newValue).then(() => {
-            user.phoneNumber = newValue;
-         });
-      }
-
-      console.log(user);
-
-      modal.style.visibility = "hidden";
-      inputField.value = "";
-   });
-
-   // Adiciona um event listener para o botão de cancelamento dentro do modal
-   const cancelBtn = document.getElementById("cancelEdit");
-   cancelBtn.addEventListener("click", function () {
-      modal.style.visibility = "hidden";
-      inputField.value = "";
-   });
-}

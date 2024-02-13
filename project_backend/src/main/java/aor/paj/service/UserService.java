@@ -118,10 +118,10 @@ public class UserService {
         }
     }
     @PUT
-    @Path("/updatePassword/{username}")
+    @Path("/updatePassword")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePassword(@PathParam("username") String username, @QueryParam("password") String password){
-        boolean fieldChanged = userBean.updatePassword(username, password);
+    public Response updatePassword(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("newPassword") String newPassword){
+        boolean fieldChanged = userBean.updatePassword(username, password, newPassword);
         if(fieldChanged){
             return Response.status(200).entity("Password changed with successfuly").build();
         }else{
