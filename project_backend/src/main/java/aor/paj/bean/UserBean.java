@@ -206,68 +206,59 @@ public class UserBean {
     }
     public boolean updateEmail(String username, String password, String email) {
         boolean fieldChanged = false;
+        boolean validEmail = isValidEmail(email);
             User u = getUser(username, password);
             boolean emailAlreadyExists = emailExists(email);
-            if (u !=null && !emailAlreadyExists) {
+            if (u !=null && validEmail && !emailAlreadyExists) {
                     u.setEmail(email);
                     writeIntoJsonFile();
                     fieldChanged = true;
-
         }
         return fieldChanged;
     }
 
     public boolean emailExists(String email){
         boolean emailExists = false;
-        if(email==null){
-
-        }
-        for(User u: users){
-            String userEmail= u.getEmail();
-            if(userEmail!= null && userEmail.equals(email)){
-                emailExists = true;
+            for (User u : users) {
+                String userEmail = u.getEmail();
+                if (userEmail != null && userEmail.equals(email)) {
+                    emailExists = true;
+                }
             }
-        }
         return emailExists;
     }
 
-    public boolean updateFirstName(String username, String firstName) {
+    public boolean updateFirstName(String username, String password, String firstName) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
+
+            User u = getUser(username, password);
+            if(u!=null){
                 u.setFirstName(firstName);
                 writeIntoJsonFile();
                 fieldChanged=true;
-
-            }
         }
         return fieldChanged;
     }
-    public boolean updateLastName(String username, String lastName) {
+    public boolean updateLastName(String username, String password, String lastName) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++){
-            User u = users.get(i);
-            if(u.getUsername().equals(username)){
+            User u = getUser(username, password);
+            if(u!= null){
                 u.setLastName(lastName);
                 writeIntoJsonFile();
                 fieldChanged=true;
-
-            }
         }
         return fieldChanged;
     }
 
-    public boolean updatePhoneNumber(String username, String phoneNumber) {
+    public boolean updatePhoneNumber(String username, String password, String phoneNumber) {
         boolean fieldChanged = false;
-        for(int i=0; i< users.size() && !fieldChanged; i++) {
-            User u = users.get(i);
+            User u = getUser(username, password);
             boolean phoneExists1 = phoneExists(phoneNumber);
-            if (u.getUsername().equals(username) && !phoneExists1) {
-                u.setEmail(phoneNumber);
+            boolean phoneValid=isValidPhoneNumber(phoneNumber);
+            if (u!=null && !phoneExists1 && phoneValid) {
+                u.setPhoneNumber(phoneNumber);
                 writeIntoJsonFile();
                 fieldChanged = true;
-            }
         }
         return fieldChanged;
     }

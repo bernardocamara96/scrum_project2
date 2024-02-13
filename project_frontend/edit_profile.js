@@ -3,6 +3,7 @@ const password = sessionStorage.getItem("pass");
 const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo");
+console.log(password);
 
 
 let user = null;
@@ -103,29 +104,37 @@ function saveChanges() {
       // Salvar a nova senha
       const newPassword = document.getElementById('edit_password').value;
       // Chame a função para atualizar a senha no backend
-      updatePassword(username, newPassword);
+      updatePassword(username, password, newPassword);
       viewpassword.value = newPassword;
    }
 
    if (emailEdited) {
       const newEmail = document.getElementById('edit_email').value;
-
+      if(isValidEmail(newEmail)) {
       updateEmail(username, password, newEmail);
+      }else{
+         alert("Invalid email");
+      }
    
    }
    if (firstNameEdited) {
       const newFirstName = document.getElementById('edit_firstName').value;
-      updateFirstName(username, newFirstName);
+      updateFirstName(username, password, newFirstName);
       console.log(newFirstName);
    }
    if(lastNameEdited) {
       const newLastName = document.getElementById('edit_lastName').value;
-      updateLastName(username, newLastName);
+      updateLastName(username, password, newLastName);
       console.log(newLastName);
+
    }if(phoneEdited) {
       const newPhone = document.getElementById('edit_phone').value;
-      updatePhoneNumber(username, newPhone);
-      console.log(newPhone);
+      if(isValidPhoneNumber(newPhone)){
+      updatePhoneNumber(username, password, newPhone);
+      }else{
+         alert("Invalid phone number");
+      }
+   
    }
 
    // Reinicie as variáveis de controle
@@ -142,7 +151,8 @@ function saveChanges() {
 const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", function(){
  saveChanges();
- window.location.href = "scrum.html";
+ console.log(user);
+ //window.location.href = "scrum.html";
 })
 
 async function getUser(username, pass) {
@@ -171,7 +181,7 @@ async function updatePhoto(username, pass, newPhoto) {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
-         pass:pass,
+         password:pass,
          newPhoto: newPhoto,
      },
    });
@@ -186,18 +196,22 @@ async function updatePhoto(username, pass, newPhoto) {
    }
 }
 
-async function updatePassword(username, newPassword) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updatePassword/" + username, {
+async function updatePassword(username, password, newPassword) {
+   await fetch("http://localhost:8080/project_backend/rest/users/updatePassword" , {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
+         username: username,
+         password:password,
+         newPassword: newPassword
       },
-      body: JSON.stringify({ newPassword: newPassword }),
+    
    }).then(function (response) {
       if (response.status === 200) {
          alert("Password updated  successfully :)");
          viewpassword.value = newPassword;
+         sessionStorage.setItem("pass", newPassword);
       } else if (response.status === 404) {
          alert("user not found");
       } else {
@@ -207,14 +221,14 @@ async function updatePassword(username, newPassword) {
 }
 
 async function updateEmail(username, pass, newEmail) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail/"  {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail",  {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
-         pass:pass,
-         newEmail: newEmail
+         password:pass,
+         email: newEmail
       },
       
    }).then(function (response) {
@@ -222,20 +236,23 @@ async function updateEmail(username, pass, newEmail) {
          alert("Email updated  successfully :)");
          viewEmail.value = newEmail;
       } else if (response.status === 404) {
-         alert("user not found");
+         alert("Email already exists");
       } else {
-         alert("Something went wrong");
+         alert("Invalid email");
       }
    });
 }
-async function updateFirstName(username, newFirstName) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName/" + username, {
+async function updateFirstName(username, password, newFirstName) {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName" , {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
+         username:username,
+         password: password,
+         firstName: newFirstName
       },
-      body: JSON.stringify({ newFirstName: newFirstName }),
+      
    }).then(function (response) {
       if (response.status === 200) {
          alert("First Name updated  successfully :)");
@@ -247,14 +264,17 @@ async function updateFirstName(username, newFirstName) {
       }
    });
 }
-async function updateLastName(username, newLastName) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateLastName/" + username, {
+async function updateLastName(username, password, newLastName) {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateLastName", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
+         username:username,
+         password: password,
+         lastName: newLastName
       },
-      body: JSON.stringify({ newLastName: newLastName }),
+    
    }).then(function (response) {
       if (response.status === 200) {
          alert("Last Name updated  successfully :)");
@@ -266,14 +286,17 @@ async function updateLastName(username, newLastName) {
       }
    });
 }
-async function updatePhoneNumber(username, newPhoneNumber) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updatePhoneNumber/" + username, {
+async function updatePhoneNumber(username, password, newPhoneNumber) {
+   await fetch("http://localhost:8080/project_backend/rest/users/updatePhoneNumber" , {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
+         username:username,
+         password: password,
+         phonenumber: newPhoneNumber
       },
-      body: JSON.stringify({ newPhoneNumber: newPhoneNumber }),
+      
    }).then(function (response) {
       if (response.status === 200) {
          alert("Phone number updated  successfully :)");
@@ -284,5 +307,21 @@ async function updatePhoneNumber(username, newPhoneNumber) {
          alert("Something went wrong");
       }
    });
+}
+
+function isValidPhoneNumber(phoneNumber) {
+   valideNumber = true;
+
+   if (phoneNumber.length != 9 && phoneNumber.length != 10) valideNumber = false;
+   // Check if the phone number has the expected format
+   if (!phoneNumber.match(/^\d+$/)) {
+      valideNumber = false;
+   }
+   return valideNumber;
+}
+
+function isValidEmail(email) {
+   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   return emailRegex.test(email);
 }
 
