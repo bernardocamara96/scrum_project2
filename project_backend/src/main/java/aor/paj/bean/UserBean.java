@@ -48,6 +48,18 @@ public class UserBean {
         writeIntoJsonFile();
     }
 
+    public boolean removeTask(User user,long id) {
+        boolean taskRemoved=false;
+        ArrayList<Task> tasksRequested=user.getTasks();
+        for (int i=0;i<tasksRequested.size() && !taskRemoved;i++) {
+            if (tasksRequested.get(i).getId() == id) {
+                tasksRequested.remove(i);
+                taskRemoved=true;
+            }
+        }
+        writeIntoJsonFile();
+        return taskRemoved;
+    }
     public Task getTask(User user, long id){
         Task taskRequested=null;
         ArrayList<Task> tasks=user.getTasks();

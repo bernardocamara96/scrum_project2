@@ -63,8 +63,7 @@ getTasks(username, pass).then((result) => {
          if (confirm("Are you sure you want to delete this task?")) {
             for (let i = 0; i < tasks.length; i++) {
                if (tasks[i].id == this.parentNode.id) {
-                  tasks.splice(i, 1);
-                  localStorage.setItem("tasks", JSON.stringify(tasks));
+                  deleteTask(username, pass, tasks[i].id);
                   this.parentNode.remove();
                }
             }
@@ -313,6 +312,17 @@ async function updateTaskState(username, pass, id, state) {
          pass: pass,
          id: id,
          state: state,
+      },
+   });
+}
+async function deleteTask(username, pass, task_id) {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
+      method: "DELETE",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         pass: pass,
       },
    });
 }

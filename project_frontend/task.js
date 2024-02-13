@@ -140,8 +140,7 @@ qual queremos eliminar e quantos elementos queremos eliminar, neste caso vamos b
 ser eliminada e como é apenas essa o segundo parâmetro é 1*/
 document.querySelector("#task_delete").addEventListener("click", function () {
    if (confirmDelete()) {
-      tasks.splice(index, 1);
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+      deleteTask(username, pass, sessionStorage.getItem("task_id"));
       window.location.href = "scrum.html";
    }
 });
@@ -155,7 +154,7 @@ document.querySelector("#cancel").addEventListener("click", function () {
 
 //Botão para direcionar o utlizador para a página de login
 document.querySelector("#logout").addEventListener("click", function () {
-   localStorage.setItem("username", "");
+   sessionStorage.clear();
    window.location.href = "login.html";
 });
 
@@ -283,4 +282,16 @@ async function getTask(username, pass, id) {
 
    let task = await response.json();
    return task;
+}
+
+async function deleteTask(username, pass, task_id) {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
+      method: "DELETE",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         username: username,
+         pass: pass,
+      },
+   });
 }

@@ -55,7 +55,6 @@ public class TaskService {
             if (taskChanged == null) {
                 return Response.status(404).entity("This task doesn't exist").build();
             }
-
             if (title.equals("")) {
                 return Response.status(400).entity("The task must have a title").build();
             } else {
@@ -119,41 +118,19 @@ public class TaskService {
         }
     }
 
-
-    /*@GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTask(@PathParam("id")int id) {
-        Task task = taskBean.getTasks().get(id);
-        if (task==null)
-            return Response.status(406).entity("Task with this id is not found").build();
-
-        return Response.status(200).entity(task).build();
-
-    }
-
-
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTask(@PathParam("id") int id) {
-        boolean deleted = taskBean.removeTask(id);
-        if (!deleted)
-            return Response.status(406).entity("Task with this id is not found").build();
-
-        return Response.status(200).entity("deleted").build();
+    public Response removeTask(@HeaderParam("username")String username,@HeaderParam("pass")String pass,@PathParam("id") long id) {
+        User userRequested=userBean.getUser(username,pass);
+        if (userRequested!=null) {
+            boolean deleted = userBean.removeTask(userRequested,id);
+            if (deleted) return Response.status(200).entity("deleted").build();
+            else   return Response.status(406).entity("Task with this id was not found").build();
+        }
+        else{
+            return Response.status(404).entity("This user doesn't exist").build();
+        }
     }
 
-
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(Task a, @PathParam("id") int id) {
-        boolean updated = taskBean.updateTask(id, a);
-
-        if (!updated)
-            return Response.status(406).entity("Task with this id is not found").build();
-
-        return Response.status(200).entity("updated").build();
-    }*/
 }
