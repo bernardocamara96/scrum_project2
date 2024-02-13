@@ -1201,7 +1201,7 @@ label {
 .confirm_profile {
    margin-top: 20px;
    background-color: var(--blue);
-   transform: translate(-55%, 125%);
+   transform: translate(-44%, 125%);
 }
 .btn_save, .btn_cancel {
    background-color: var(--white);
