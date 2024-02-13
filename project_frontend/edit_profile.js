@@ -3,13 +3,12 @@ const password = sessionStorage.getItem("pass");
 const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo");
-console.log(password);
+
 
 
 let user = null;
 
 getUser(username, password).then((result) => {
-   console.log(result);
    user = result;
    user_img.src = user.imgURL;
    viewpassword.placeholder = user.password;
@@ -60,20 +59,17 @@ edit_photoLabel.addEventListener("change", function () {
 
 //action listenner para o botao save da foto
 document.querySelector("#edit_confirmPhoto").addEventListener("click", function () {
-   background.style.visibility = "hidden";
-   modalPhoto.style.visibility = "hidden";
-   const newPhoto = document.querySelector("#edit_photoLabel").value;
+   newPhoto = document.querySelector("#edit_photoLabel").value;
    const validURL = isValidURL(newPhoto);
    if(validURL){
-   updatePhoto(username, password, newPhoto);
-   console.log(edit_photo.src);
+   background.style.visibility = "hidden";
+   modalPhoto.style.visibility = "hidden"
+   
    }
    else{
       alert("Invalid Image URL");
    }
 });
-
-
 
 // Variáveis de controle para cada campo editável
 let passwordEdited = false;
@@ -81,11 +77,17 @@ let emailEdited = false;
 let firstNameEdited = false;
 let lastNameEdited = false;
 let phoneEdited = false;
+let photoEdited = false;
 
 // Adiciona um evento de alteração para cada campo de entrada
+document.getElementById('edit_photoLabel').addEventListener('change', function(){
+   photoEdited = true;
+
+})
 document.getElementById('edit_password').addEventListener('change', function() {
    passwordEdited = true;
 });
+
 
 document.getElementById('edit_email').addEventListener('change', function() {
    emailEdited = true;
@@ -103,48 +105,62 @@ document.getElementById('edit_phone').addEventListener('change', function() {
    phoneEdited = true;
 });
 
-// Função para salvar as alterações
+
+
+var editField = false;
+// Funçãoconst editField = false; para salvar as alterações
 function saveChanges() {
-   if (passwordEdited) {
+   if(photoEdited){
+   newPhoto = document.querySelector("#edit_photoLabel").value;
+   updatePhoto(username, password, newPhoto);
+   editField = true;
+   }
+
+   else if (passwordEdited) {
       // Salvar a nova senha
       const newPassword = document.getElementById('edit_password').value;
       // Chame a função para atualizar a senha no backend
       updatePassword(username, password, newPassword);
       viewpassword.value = newPassword;
+      editField = true;
    }
 
    else if (emailEdited) {
       const newEmail = document.getElementById('edit_email').value;
       if(isValidEmail(newEmail)) {
       updateEmail(username, password, newEmail);
+      editField = true;
       }else{
          alert("Invalid email");
       }
+      
    
    }
    else if (firstNameEdited) {
       const newFirstName = document.getElementById('edit_firstName').value;
       updateFirstName(username, password, newFirstName);
-      console.log(newFirstName);
+      editField = true;
+
    }
    else if(lastNameEdited) {
       const newLastName = document.getElementById('edit_lastName').value;
       updateLastName(username, password, newLastName);
-      console.log(newLastName);
+      editField = true;
+      
 
    }
    else if(phoneEdited) {
       const newPhone = document.getElementById('edit_phone').value;
       if(isValidPhoneNumber(newPhone)){
       updatePhoneNumber(username, password, newPhone);
+      editField = true;
       }else{
          alert("Invalid phone number");
       }
-   
-   }
-   else{
-      alert("Please fill one of the following fields");
-      console.log("nao chegou aqui");
+
+      return editField;
+
+
    }
 
    // Reinicie as variáveis de controle
@@ -153,6 +169,7 @@ function saveChanges() {
    firstNameEdited = false;
    lastNameEdited = false;
    phoneEdited = false;
+  
 }
 
 
@@ -160,10 +177,16 @@ function saveChanges() {
 
 const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", function(){
- saveChanges();
- console.log(user);
+console.log(editField);
 
-})
+   if(saveChanges) {
+   
+   alert("Your changes have been saved");
+   }else{
+   alert("Please fill all the fields");
+ } 
+
+});
 
 async function getUser(username, pass) {
    let response = await fetch(
@@ -197,7 +220,6 @@ async function updatePhoto(username, pass, newPhoto) {
    });
         
    if (response.status === 200) {
-      alert("User photo updated successfully. ");
       user_img.src = newPhoto;
    } else if (response.status === 404) {
       alert("User not found");
@@ -219,7 +241,6 @@ async function updatePassword(username, password, newPassword) {
     
    }).then(function (response) {
       if (response.status === 200) {
-         alert("Password updated  successfully :)");
          viewpassword.value = newPassword;
          sessionStorage.setItem("pass", newPassword);
       } else if (response.status === 404) {
@@ -243,7 +264,7 @@ async function updateEmail(username, pass, newEmail) {
       
    }).then(function (response) {
       if (response.status === 200) {
-         alert("Email updated  successfully :)");
+        
          viewEmail.value = newEmail;
       } else if (response.status === 404) {
          alert("Email already exists");
@@ -265,7 +286,7 @@ async function updateFirstName(username, password, newFirstName) {
       
    }).then(function (response) {
       if (response.status === 200) {
-         alert("First Name updated  successfully :)");
+         
          viewFirstName.value = newFirstName;
       } else if (response.status === 404) {
          alert("user not found");
