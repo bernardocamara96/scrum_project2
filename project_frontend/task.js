@@ -8,10 +8,6 @@ const username = sessionStorage.getItem("username");
 const pass = sessionStorage.getItem("pass");
 let priority_checked = 100;
 
-if (username == null || pass == null) {
-   window.location.href = "login.html";
-}
-
 writeDate();
 
 // Executa a função em intervalos de 1 segundo para atualizar a data

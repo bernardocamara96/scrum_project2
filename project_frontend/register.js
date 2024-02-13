@@ -88,12 +88,15 @@ function isValidEmail(email) {
 }
 
 function isValidURL(url) {
-   try {
-      new URL(url);
-      return true;
-   } catch {
-      return false;
-   }
+   const imageExtensions = /\.(jpeg|jpg|gif|png|bmp)$/i;
+   if (imageExtensions.test(url) == true) {
+      try {
+         new URL(url);
+         return true;
+      } catch {
+         return false;
+      }
+   } else return false;
 }
 
 async function validateUser(username_txt, password_txt, email_txt, firstName_txt, lastName_txt, phoneNumber_txt) {
