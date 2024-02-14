@@ -8,6 +8,7 @@
       <link rel="stylesheet" href="main.css" />
    </head>
    <body id="login_body">
+      <div id="background"></div>
       <div id="body_color"></div>
       <div id="aside_color"></div>
       <header>
@@ -16,39 +17,37 @@
 
       <div class="edit_container">
          <div class="edit_photo">
-            <img src="user_photo" id="user_photo" alt="User photo" />
+            <img src="user.png" id="user_photo" alt="User photo" />
             <p id="username_edit"></p>
             <button class="change_photo" id="change_photo">Change Photo</button>
          </div>
          <div class="edit_profile">
             <div>
-            <label class="descriptioLabel">Password</label>
-            <input type="text"  class="edit_element" id="edit_password"/>
+               <label class="descriptioLabel">Password</label>
+               <input type="text" class="edit_element" id="edit_password" />
+            </div>
+            <div>
+               <label class="descriptioLabel">Email</label>
+               <input type="text" class="edit_element" id="edit_email" />
+            </div>
+            <div>
+               <label class="descriptioLabel">First Name</label>
+               <input type="text" class="edit_element" id="edit_firstName" />
+            </div>
+            <div>
+               <label class="descriptioLabel">Last Name</label>
+               <input type="text" class="edit_element" id="edit_lastName" />
+            </div>
+            <div>
+               <label class="descriptioLabel">Phone Number</label>
+               <input type="text" class="edit_element" id="edit_phone" />
+            </div>
+
+            <div class="confirm_profile">
+               <button class="btn_save" id="btn-save">Save</button>
+               <button class="btn_cancel" id="btn_cancel">Back</button>
+            </div>
          </div>
-         <div>
-            <label class="descriptioLabel">Email</label>
-            <input type="text"  class="edit_element" id="edit_email"  />
-         </div>
-         <div>
-            <label class="descriptioLabel">First Name</label>
-            <input type="text" class="edit_element" id="edit_firstName"  />
-         </div>
-         <div>
-            <label class="descriptioLabel">Last Name</label>
-            <input type="text"  class="edit_element" id="edit_lastName"  />
-         </div>
-         <div>
-            <label class="descriptioLabel">Phone Number</label>
-            <input type="text"  class="edit_element" id="edit_phone"  />
-         </div>
-      
-         <div class="confirm_profile">
-            <button class="btn_save" id="btn-save">Save</button>
-            <button class="btn_cancel" id="btn_cancel">Back</button>
-         </div>
-      </div>
-      <div id="background"></div>
-     
       </div>
       <div class="modal" id="edit_modal">
          <img src="user.png" alt="User photo" id="edit_photo" />

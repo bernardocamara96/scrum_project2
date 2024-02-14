@@ -145,7 +145,7 @@ function printTasks(tasks) {
    document.querySelector("#toDo").innerHTML = "";
    document.querySelector("#doing").innerHTML = "";
    document.querySelector("#done").innerHTML = "";
-   orderTasksByPriorityAndDate(tasks);
+   orderTasks(tasks);
    for (let i = 0; i < tasks.length; i++) {
       const task_div = document.createElement("div");
       task_div.id = tasks[i].id;
@@ -154,11 +154,11 @@ function printTasks(tasks) {
       task_div.setAttribute("draggable", "true");
 
       if (tasks[i].priority == LOW) {
-         task_div.style.backgroundColor = "#1eaa28";
+         task_div.style.backgroundColor = "#44ca4d";
       } else if (tasks[i].priority == MEDIUM) {
-         task_div.style.backgroundColor = "#fbff00";
+         task_div.style.backgroundColor = "#fcff2e";
       } else if (tasks[i].priority == HIGH) {
-         task_div.style.backgroundColor = "#e70000";
+         task_div.style.backgroundColor = "#ff4d4d";
       }
 
       task_div.style.color = fontColorRGB(task_div.style.backgroundColor);
@@ -167,6 +167,18 @@ function printTasks(tasks) {
       task_title.classList.add("task_title");
       task_title.textContent = tasks[i].title;
       task_div.appendChild(task_title);
+
+      let date_now = new Date();
+      date_now = date_now.getTime();
+      let endDate = new Date(tasks[i].endDate);
+      endDate = endDate.getTime();
+      let daysDiferences = endDate - date_now;
+      daysDiferences = daysDiferences / (1000 * 60 * 60 * 24);
+      daysDiferences = Math.round(daysDiferences);
+      if (daysDiferences > 999) daysDiferences = 999;
+      const task_day = document.createElement("div");
+      task_day.classList.add("task_day");
+      task_day.textContent = daysDiferences;
 
       const task_btn = document.createElement("button");
       task_btn.innerHTML = "&#9998;";
@@ -182,6 +194,7 @@ function printTasks(tasks) {
 
       addEventsBeforeDrag(task_btnDelete, task_div);
 
+      task_div.appendChild(task_day);
       task_div.appendChild(task_btnDelete);
       task_div.appendChild(task_btn);
 
@@ -238,12 +251,12 @@ function taskCreationAddEvents(task_div, tasks) {
    /*Os botões de delete e de edit das tasks apenas são mostrados quando o cursor passa por cima da div*/
 
    task_div.addEventListener("mouseenter", function () {
-      task_div.childNodes[1].style.visibility = "visible";
       task_div.childNodes[2].style.visibility = "visible";
+      task_div.childNodes[3].style.visibility = "visible";
    });
    task_div.addEventListener("mouseleave", function () {
-      task_div.childNodes[1].style.visibility = "hidden";
       task_div.childNodes[2].style.visibility = "hidden";
+      task_div.childNodes[3].style.visibility = "hidden";
    });
 }
 
@@ -340,7 +353,7 @@ async function deleteTask(username, pass, task_id) {
    });
 }
 
-function orderTasksByPriorityAndDate(tasks) {
+function orderTasks(tasks) {
    tasks.sort((a, b) => {
       if (a.priority > b.priority) {
          return -1;
@@ -490,7 +503,7 @@ function fontColor(hexColor) {
    var green = parseInt(rgb[2], 16);
    var blue = parseInt(rgb[3], 16);
 
-   if (red * 0.299 + green * 0.587 + blue * 0.114 > 186) {
+   if (red * 0.299 + green * 0.587 + blue * 0.114 > 125) {
       return "rgb(14, 14, 14)";
    } else {
       return "rgb(250, 250, 250)";
@@ -511,7 +524,7 @@ function fontColorRGB(RGBcolor) {
    var green = colorsOnly[1].split(",");
    var blue = colorsOnly[2].split(",");
 
-   if (red * 0.299 + green * 0.587 + blue * 0.114 > 186) {
+   if (red * 0.299 + green * 0.587 + blue * 0.114 > 125) {
       return "rgb(14, 14, 14)";
    } else {
       return "rgb(250, 250, 250)";

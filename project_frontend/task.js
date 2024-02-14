@@ -40,11 +40,11 @@ if (task_type == "edit") {
          if (priority_array[i].value == priority_checked) {
             priority_array[i].checked = true;
             if (i == 0) {
-               priority_color.style.backgroundColor = "#1eaa28";
+               priority_color.style.backgroundColor = "#44ca4d";
             } else if (i == 1) {
-               priority_color.style.backgroundColor = "#fbff00";
+               priority_color.style.backgroundColor = "#fcff2e";
             } else if (i == 2) {
-               priority_color.style.backgroundColor = "#e70000";
+               priority_color.style.backgroundColor = "#ff4d4d";
             }
          }
       }
@@ -53,7 +53,7 @@ if (task_type == "edit") {
    document.querySelector("#task_delete").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
    document.querySelector("#task_creationTitle").textContent = "Task Creation";
-   priority_color.style.backgroundColor = "#1eaa28";
+   priority_color.style.backgroundColor = "#44ca4d";
    priority_array[0].checked = true;
 }
 
@@ -64,7 +64,12 @@ document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
       if (!end_date.value == "" && !initial_date.value == "") {
          let current_date = new Date();
-         current_date = current_date.toLocaleDateString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit" });
+         const year = current_date.getFullYear();
+         const month = (current_date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-based
+         const day = current_date.getDate().toString().padStart(2, "0");
+
+         current_date = `${year}-${month}-${day}`;
+
          if (initial_date.value >= current_date) {
             if (end_date.value > initial_date.value) {
                if (task_type == "create") {
@@ -129,15 +134,15 @@ document.querySelector("#task_save").addEventListener("click", function () {
 for (let i = 0; i < priority_array.length; i++) {
    if (i == 0) {
       priority_array[i].addEventListener("click", function () {
-         priority_color.style.backgroundColor = "#1eaa28";
+         priority_color.style.backgroundColor = "#44ca4d";
       });
    } else if (i == 1) {
       priority_array[i].addEventListener("click", function () {
-         priority_color.style.backgroundColor = "#fbff00";
+         priority_color.style.backgroundColor = "#fcff2e";
       });
    } else if (i == 2) {
       priority_array[i].addEventListener("click", function () {
-         priority_color.style.backgroundColor = "#e70000";
+         priority_color.style.backgroundColor = "#ff4d4d";
       });
    }
 }

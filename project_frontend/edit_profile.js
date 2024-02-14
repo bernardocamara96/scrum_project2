@@ -4,8 +4,6 @@ const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo");
 
-
-
 let user = null;
 
 getUser(username, password).then((result) => {
@@ -43,6 +41,64 @@ document.querySelector("#change_photo").addEventListener("click", function () {
    background.style.visibility = "visible";
    modalPhoto.style.visibility = "visible";
 });
+
+background.addEventListener("click", function () {
+   background.style.visibility = "hidden";
+   modalPhoto.style.visibility = "hidden";
+});
+
+const imageModal = document.getElementById("edit_photo");
+edit_photoLabel.addEventListener("change", function () {
+   if (isValidURL(edit_photoLabel.value)) {
+      imageModal.src = edit_photoLabel.value;
+   } else imageModal.src = "user.png";
+});
+
+//action listenner para o botao save da foto
+document.querySelector("#edit_confirmPhoto").addEventListener("click", function () {
+   newPhoto = document.querySelector("#edit_photoLabel").value;
+   const validURL = isValidURL(newPhoto);
+   if (validURL) {
+      document.querySelector("#user_photo").src = newPhoto;
+   } else {
+      document.querySelector("#user_photo").src = "user.png";
+   }
+   background.style.visibility = "hidden";
+   modalPhoto.style.visibility = "hidden";
+});
+
+// Variáveis de controle para cada campo editável
+var passwordEdited = false;
+var emailEdited = false;
+var firstNameEdited = false;
+var lastNameEdited = false;
+var phoneEdited = false;
+var photoEdited = false;
+
+// Adiciona um evento de alteração para cada campo de entrada
+document.getElementById("edit_photoLabel").addEventListener("change", function () {
+   photoEdited = true;
+});
+document.getElementById("edit_password").addEventListener("change", function () {
+   passwordEdited = true;
+});
+
+document.getElementById("edit_email").addEventListener("change", function () {
+   emailEdited = true;
+});
+
+document.getElementById("edit_firstName").addEventListener("change", function () {
+   firstNameEdited = true;
+});
+
+document.getElementById("edit_lastName").addEventListener("change", function () {
+   lastNameEdited = true;
+});
+
+document.getElementById("edit_phone").addEventListener("change", function () {
+   phoneEdited = true;
+});
+
 function isValidURL(url) {
    try {
       new URL(url);
@@ -52,140 +108,71 @@ function isValidURL(url) {
    }
 }
 
-const imageModal = document.getElementById("edit_photo");
-edit_photoLabel.addEventListener("change", function () {
-      imageModal.src = edit_photoLabel.value;
-});
-
-//action listenner para o botao save da foto
-document.querySelector("#edit_confirmPhoto").addEventListener("click", function () {
-   newPhoto = document.querySelector("#edit_photoLabel").value;
-   const validURL = isValidURL(newPhoto);
-   if(validURL){
-   background.style.visibility = "hidden";
-   modalPhoto.style.visibility = "hidden"
-   
-   }
-   else{
-      alert("Invalid Image URL");
-   }
-});
-
-// Variáveis de controle para cada campo editável
-let passwordEdited = false;
-let emailEdited = false;
-let firstNameEdited = false;
-let lastNameEdited = false;
-let phoneEdited = false;
-let photoEdited = false;
-
-// Adiciona um evento de alteração para cada campo de entrada
-document.getElementById('edit_photoLabel').addEventListener('change', function(){
-   photoEdited = true;
-
-})
-document.getElementById('edit_password').addEventListener('change', function() {
-   passwordEdited = true;
-});
-
-
-document.getElementById('edit_email').addEventListener('change', function() {
-   emailEdited = true;
-});
-
-document.getElementById('edit_firstName').addEventListener('change', function() {
-   firstNameEdited = true;
-});
-
-document.getElementById('edit_lastName').addEventListener('change', function() {
-   lastNameEdited = true;
-});
-
-document.getElementById('edit_phone').addEventListener('change', function() {
-   phoneEdited = true;
-});
-
-
-
-var editField = false;
 // Funçãoconst editField = false; para salvar as alterações
 function saveChanges() {
-   if(photoEdited){
-   newPhoto = document.querySelector("#edit_photoLabel").value;
-   updatePhoto(username, password, newPhoto);
-   editField = true;
+   let editField = false;
+   if (photoEdited) {
+      newPhoto = document.querySelector("#edit_photoLabel").value;
+      updatePhoto(username, password, newPhoto);
+      editField = true;
    }
-
-   else if (passwordEdited) {
+   if (passwordEdited) {
       // Salvar a nova senha
-      const newPassword = document.getElementById('edit_password').value;
+      const newPassword = document.getElementById("edit_password").value;
       // Chame a função para atualizar a senha no backend
       updatePassword(username, password, newPassword);
       viewpassword.value = newPassword;
       editField = true;
    }
-
-   else if (emailEdited) {
-      const newEmail = document.getElementById('edit_email').value;
-      if(isValidEmail(newEmail)) {
-      updateEmail(username, password, newEmail);
-      editField = true;
-      }else{
+   if (emailEdited) {
+      const newEmail = document.getElementById("edit_email").value;
+      if (isValidEmail(newEmail)) {
+         updateEmail(username, password, newEmail);
+         editField = true;
+      } else {
          alert("Invalid email");
       }
-      
-   
    }
-   else if (firstNameEdited) {
-      const newFirstName = document.getElementById('edit_firstName').value;
-      updateFirstName(username, password, newFirstName);
-      editField = true;
-
+   if (firstNameEdited) {
+      if (viewFirstName.value.length < 13) {
+         const newFirstName = document.getElementById("edit_firstName").value;
+         updateFirstName(username, password, newFirstName);
+         editField = true;
+      } else alert("First Name is too long");
    }
-   else if(lastNameEdited) {
-      const newLastName = document.getElementById('edit_lastName').value;
+   if (lastNameEdited) {
+      const newLastName = document.getElementById("edit_lastName").value;
       updateLastName(username, password, newLastName);
       editField = true;
-      
-
    }
-   else if(phoneEdited) {
-      const newPhone = document.getElementById('edit_phone').value;
-      if(isValidPhoneNumber(newPhone)){
-      updatePhoneNumber(username, password, newPhone);
-      editField = true;
-      }else{
+   if (phoneEdited) {
+      const newPhone = document.getElementById("edit_phone").value;
+      if (isValidPhoneNumber(newPhone)) {
+         updatePhoneNumber(username, password, newPhone);
+         editField = true;
+      } else {
          alert("Invalid phone number");
       }
-
-      return editField;
-
-
    }
-
+   return editField;
    // Reinicie as variáveis de controle
    passwordEdited = false;
    emailEdited = false;
    firstNameEdited = false;
    lastNameEdited = false;
    phoneEdited = false;
-  
 }
-
 
 //action listenner para o botao save da pagina
 
 const bntSave = document.getElementById("btn-save");
-bntSave.addEventListener("click", function(){
-console.log(editField);
-
-   if(saveChanges) {
-   
-   alert("Your changes have been saved");
-   }else{
-   alert("Please fill all the fields");
- } 
-
+bntSave.addEventListener("click", function () {
+   if (saveChanges()) {
+      alert("Your changes have been saved");
+      window.location.href = "scrum.html";
+   } else {
+      alert("You didn't change any field.");
+   }
 });
 
 async function getUser(username, pass) {
@@ -214,11 +201,11 @@ async function updatePhoto(username, pass, newPhoto) {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
-         password:pass,
+         password: pass,
          newPhoto: newPhoto,
-     },
+      },
    });
-        
+
    if (response.status === 200) {
       user_img.src = newPhoto;
    } else if (response.status === 404) {
@@ -229,16 +216,15 @@ async function updatePhoto(username, pass, newPhoto) {
 }
 
 async function updatePassword(username, password, newPassword) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updatePassword" , {
+   await fetch("http://localhost:8080/project_backend/rest/users/updatePassword", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
-         password:password,
-         newPassword: newPassword
+         password: password,
+         newPassword: newPassword,
       },
-    
    }).then(function (response) {
       if (response.status === 200) {
          viewpassword.value = newPassword;
@@ -252,19 +238,17 @@ async function updatePassword(username, password, newPassword) {
 }
 
 async function updateEmail(username, pass, newEmail) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail",  {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateEmail", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          username: username,
-         password:pass,
-         email: newEmail
+         password: pass,
+         email: newEmail,
       },
-      
    }).then(function (response) {
       if (response.status === 200) {
-        
          viewEmail.value = newEmail;
       } else if (response.status === 404) {
          alert("Email already exists");
@@ -274,19 +258,17 @@ async function updateEmail(username, pass, newEmail) {
    });
 }
 async function updateFirstName(username, password, newFirstName) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName" , {
+   await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
-         username:username,
+         username: username,
          password: password,
-         firstName: newFirstName
+         firstName: newFirstName,
       },
-      
    }).then(function (response) {
       if (response.status === 200) {
-         
          viewFirstName.value = newFirstName;
       } else if (response.status === 404) {
          alert("user not found");
@@ -301,11 +283,10 @@ async function updateLastName(username, password, newLastName) {
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
-         username:username,
+         username: username,
          password: password,
-         lastName: newLastName
+         lastName: newLastName,
       },
-    
    }).then(function (response) {
       if (response.status === 200) {
          alert("Last Name updated  successfully :)");
@@ -318,16 +299,15 @@ async function updateLastName(username, password, newLastName) {
    });
 }
 async function updatePhoneNumber(username, password, newPhoneNumber) {
-   await fetch("http://localhost:8080/project_backend/rest/users/updatePhoneNumber" , {
+   await fetch("http://localhost:8080/project_backend/rest/users/updatePhoneNumber", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
-         username:username,
+         username: username,
          password: password,
-         phonenumber: newPhoneNumber
+         phonenumber: newPhoneNumber,
       },
-      
    }).then(function (response) {
       if (response.status === 200) {
          alert("Phone number updated  successfully :)");
@@ -355,4 +335,3 @@ function isValidEmail(email) {
    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    return emailRegex.test(email);
 }
-
