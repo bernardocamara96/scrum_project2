@@ -73,7 +73,6 @@ document.querySelector("#task_save").addEventListener("click", function () {
          if (initial_date.value >= current_date) {
             if (end_date.value > initial_date.value) {
                if (task_type == "create") {
-                  let data = new Date();
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
                         priority_checked = parseInt(priority_array[i].value);
@@ -81,7 +80,6 @@ document.querySelector("#task_save").addEventListener("click", function () {
                   }
 
                   let task = {
-                     id: data.getTime(),
                      title: title_txt.value,
                      description: description_txt.value,
                      initialDate: initial_date.value,
