@@ -38,35 +38,6 @@ getUser(username, pass).then((result) => {
                }
             });
          }
-         const delete_btns = document.querySelectorAll(".delete_btn");
-         const buttons = document.querySelectorAll(".task_btn");
-
-         for (let btn of buttons) {
-            btn.addEventListener("click", function () {
-               let validate = false;
-               for (let i = 0; i < tasks.length && validate == false; i++) {
-                  if (tasks[i].id == this.parentNode.id) {
-                     sessionStorage.setItem("taskType", "edit");
-                     sessionStorage.setItem("task_id", this.parentNode.id);
-                     validate = true;
-                  }
-               }
-               window.location.href = "task.html";
-            });
-         }
-
-         for (let btn of delete_btns) {
-            btn.addEventListener("click", function () {
-               if (confirm("Are you sure you want to delete this task?")) {
-                  for (let i = 0; i < tasks.length; i++) {
-                     if (tasks[i].id == this.parentNode.id) {
-                        deleteTask(username, pass, tasks[i].id);
-                        this.parentNode.remove();
-                     }
-                  }
-               }
-            });
-         }
       });
    }
 });
@@ -205,6 +176,35 @@ function printTasks(tasks) {
       } else if (tasks[i].state == "done") {
          document.querySelector("#done").appendChild(task_div);
       }
+   }
+   const delete_btns = document.querySelectorAll(".delete_btn");
+   const buttons = document.querySelectorAll(".task_btn");
+
+   for (let btn of buttons) {
+      btn.addEventListener("click", function () {
+         let validate = false;
+         for (let i = 0; i < tasks.length && validate == false; i++) {
+            if (tasks[i].id == this.parentNode.id) {
+               sessionStorage.setItem("taskType", "edit");
+               sessionStorage.setItem("task_id", this.parentNode.id);
+               validate = true;
+            }
+         }
+         window.location.href = "task.html";
+      });
+   }
+
+   for (let btn of delete_btns) {
+      btn.addEventListener("click", function () {
+         if (confirm("Are you sure you want to delete this task?")) {
+            for (let i = 0; i < tasks.length; i++) {
+               if (tasks[i].id == this.parentNode.id) {
+                  deleteTask(username, pass, tasks[i].id);
+                  this.parentNode.remove();
+               }
+            }
+         }
+      });
    }
 }
 
@@ -568,3 +568,7 @@ function rgbStringToHex(rgbString) {
    // Concatenate the hex values and return the result
    return `#${redHex}${greenHex}${blueHex}`;
 }
+
+/*module.exports = {
+   getUser,
+};*/

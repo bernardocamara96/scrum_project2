@@ -3,6 +3,7 @@ const password = sessionStorage.getItem("pass");
 const background = document.querySelector("#background");
 const modalPhoto = document.querySelector("#edit_modal");
 const user_img = document.querySelector("#user_photo");
+const body_color = document.querySelector("#body_color");
 
 let user = null;
 
@@ -14,6 +15,7 @@ getUser(username, password).then((result) => {
    viewFirstName.placeholder = user.firstName;
    viewLastName.placeholder = user.lastName;
    viewPhone.placeholder = user.phoneNumber;
+   body_color.style.backgroundColor = user.background_color;
 });
 
 const viewpassword = document.getElementById("edit_password");
