@@ -1,3 +1,5 @@
+sessionStorage.clear();
+
 document.querySelector("#login_form").addEventListener("submit", function (e) {
    e.preventDefault();
 

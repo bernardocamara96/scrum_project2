@@ -46,13 +46,9 @@ document.querySelector("#register_confirmPhoto").addEventListener("click", funct
       lastName: lastName.value,
       phoneNumber: phone.value,
       imgURL: photo.src,
-      tasks: [],
-      toDo_color: "#f1f2f4",
-      doing_color: "#f1f2f4",
-      done_color: "#f1f2f4",
-      background_color: "#172b4c",
    };
    addUser(user);
+   alert("Welcome to AgileUp! :)");
    window.location.href = "login.html";
 });
 
@@ -134,11 +130,5 @@ async function addUser(user) {
       },
 
       body: JSON.stringify(user),
-   }).then(function (response) {
-      if (response.status == 200) {
-         alert("Welcome to AgileUp :)");
-      } else {
-         alert("something went wrong :(");
-      }
    });
 }

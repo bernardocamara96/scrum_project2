@@ -4,6 +4,7 @@ import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
+import aor.paj.dto.UserDetails;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -23,7 +24,17 @@ public class UserService {
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> getUsers() {return userBean.getUsers();
+    public List<User> getUsers() {
+        return userBean.getUsers();
+    }
+
+    @GET
+    @Path("/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsern(@PathParam("username")String username){
+        UserDetails userRequested=userBean.getUserDetails(username);
+        if (userRequested==null) return Response.status(400).entity("Failed").build();
+        return Response.status(200).entity(userRequested).build();
     }
 
     @POST
@@ -58,7 +69,8 @@ public class UserService {
         int validateUser=userBean.validateUserRegister(user.getUsername(),user.getPassword(),user.getEmail(),user.getFirstName(),user.getLastName(),user.getPhoneNumber());
         if(validateUser==10) {
             if(userBean.isValidUrl(user.getImgURL())) {
-                userBean.addUser(user);
+                User newUser=new User(user.getUsername(),user.getPassword(),user.getEmail(),user.getFirstName(),user.getLastName(),user.getPhoneNumber(),user.getImgURL());
+                userBean.addUser(newUser);
                 return Response.status(200).entity("A new user was created").build();
             }
             else return Response.status(400).entity("The URL is invalid").build();
@@ -90,9 +102,9 @@ public class UserService {
     public Response validateLogin(@HeaderParam("username")String username, @HeaderParam("password")String password) {
         User user = userBean.validateLogin(username, password);
         if (user==null)
-            return Response.status(404).entity("Wrong data").build();
+            return Response.status(404).entity("Failed").build();
 
-        return Response.status(200).entity(user).build();
+        return Response.status(200).entity("Success").build();
 
     }
 
@@ -101,8 +113,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeUser(@QueryParam("username")String username) {
         boolean deleted = userBean.removeUser(username);
-        if (!deleted)
-            return Response.status(200).entity("User with this username is not found").build();
+        if (!deleted) return Response.status(200).entity("User with this username is not found").build();
 
         return Response.status(200).entity("deleted").build();
     }
@@ -193,15 +204,15 @@ public class UserService {
         userBean.saveColors(userRequest, background_color,toDo_color,doing_color,done_color);
         return Response.status(200).entity("Colors were updated").build();
     }
-   /* @PUT
-    @Path("/update")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateActivity(Activity a, @HeaderParam("id") int id) {
-        boolean updated = activityBean.updateActivity(id, a);
 
-        if (!updated)
-            return Response.status(200).entity("Activity with this idea is not found").build();
+    @POST
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logoutValidate(@HeaderParam("username") String username, @HeaderParam("password")String pass){
+        User userRequest=userBean.getUser(username,pass);
 
-        return Response.status(200).entity("updated").build();
-    }*/
+        if (userRequest==null) return Response.status(401).entity("Failed").build();
+
+        return Response.status(200).entity("Success").build();
+    }
 }

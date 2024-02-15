@@ -36,8 +36,11 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Task getTask(@PathParam("id")String id,@HeaderParam("username")String username, @HeaderParam("pass")String password) {
         User userRequested=userBean.getUser(username, password);
-        long idString=Long.parseLong(id);
-        return userBean.getTask(userRequested,idString);
+
+        if (userRequested==null) return null;
+        long idLong=Long.parseLong(id);
+
+        return userBean.getTask(userRequested,idLong);
     }
     @PUT
     @Path("/update")
@@ -110,7 +113,8 @@ public class TaskService {
         else {
             LocalDate currentDate=LocalDate.now();
             if(!task.getTitle().equals("") && task.getEndDate().isAfter(task.getInitialDate()) && (task.getInitialDate().isAfter(currentDate) || task.getInitialDate().isEqual(currentDate))) {
-                userBean.addTask(userRequested, task);
+                Task newTask=new Task(task.getTitle(),task.getDescription(),task.getInitialDate(),task.getEndDate(), task.getPriority());
+                userBean.addTask(userRequested, newTask);
                 return Response.status(200).entity("Task created").build();
             }
             else{

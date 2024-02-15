@@ -51,7 +51,7 @@ public class User {
         this.background_color=null;
     }
     public User(String username, String password, String email, String firstName, String lastName, String phoneNumber,
-                String imgURL, String toDo_color, String doing_color, String done_color, String background_color) {
+                String imgURL) {
 
         this.username = username;
         this.password = password;
@@ -61,10 +61,10 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.imgURL = imgURL;
         this.tasks=new ArrayList<>();
-        this.toDo_color=toDo_color;
-        this.doing_color=doing_color;
-        this.done_color=done_color;
-        this.background_color=background_color;
+        this.toDo_color="#f1f2f4";
+        this.doing_color="#f1f2f4";
+        this.done_color="#f1f2f4";
+        this.background_color="#172b4c";
     }
 
 
@@ -72,40 +72,38 @@ public class User {
         return tasks;
     }
 
-    public void setTasks(ArrayList<Task> tasks) {
-        this.tasks = tasks;
+    public void setTasks() {
+        this.tasks = new ArrayList<>();
     }
 
     public String getToDo_color() {
         return toDo_color;
     }
 
-    public void setToDo_color(String toDo_color) {
-        this.toDo_color = toDo_color;
-    }
+    public void setToDo_color() {this.toDo_color = "#f1f2f4";}
 
     public String getDoing_color() {
         return doing_color;
     }
 
-    public void setDoing_color(String doing_color) {
-        this.doing_color = doing_color;
+    public void setDoing_color() {
+        this.doing_color = "#f1f2f4";
     }
 
     public String getDone_color() {
         return done_color;
     }
 
-    public void setDone_color(String done_color) {
-        this.done_color = done_color;
+    public void setDone_color() {
+        this.done_color = "#f1f2f4";
     }
 
     public String getBackground_color() {
         return background_color;
     }
 
-    public void setBackground_color(String background_color) {
-        this.background_color = background_color;
+    public void setBackground_color() {
+        this.background_color = "#172b4c";
     }
 
     public String getUsername() {
@@ -168,5 +166,18 @@ public class User {
         tasks.add(task);
     }
 
+    public void changeBackground_color(String background_color) {
+        this.background_color =background_color;
+    }
+
+    public void changeToDo_color(String toDo_color) {this.toDo_color = toDo_color;}
+
+    public void changeDoing_color(String doing_color) {
+        this.doing_color = doing_color;
+    }
+
+    public void changeDone_color(String done_color) {
+        this.done_color = done_color;
+    }
 }
 

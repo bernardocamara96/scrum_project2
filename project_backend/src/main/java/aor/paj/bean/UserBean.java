@@ -2,6 +2,7 @@ package aor.paj.bean;
 
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
+import aor.paj.dto.UserDetails;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -62,17 +63,20 @@ public class UserBean {
     }
     public Task getTask(User user, long id){
         Task taskRequested=null;
-        ArrayList<Task> tasks=user.getTasks();
-        for (int i=0;i<tasks.size() && taskRequested==null;i++){
-            if (tasks.get(i).getId()==id){
-                taskRequested=tasks.get(i);
+        ArrayList<Task> tasksUser=user.getTasks();
+        System.out.println(user.getUsername());
+        for (int i=0;i<tasksUser.size() && taskRequested==null;i++){
+
+            if (tasksUser.get(i).getId()==id){
+                taskRequested=tasksUser.get(i);
             }
         }
+        System.out.println(taskRequested);
         return taskRequested;
     }
 
     public void updateTaskState(Task task, String state){
-        task.setState(state);
+        task.changeState(state);
         writeIntoJsonFile();
     }
     public void updateTask(Task task, String title, String description, LocalDate initialDate, LocalDate endDate,
@@ -86,6 +90,22 @@ public class UserBean {
     }
 
 
+    public UserDetails getUserDetails(String username){
+        User userRequested=null;
+        UserDetails userDetails=null;
+        for(int i=0;i<users.size() && userRequested==null;i++){
+            if(users.get(i).getUsername().equals(username)){
+                userRequested=users.get(i);
+            }
+        }
+
+        if(userRequested!=null) {
+
+            userDetails = new UserDetails(userRequested.getUsername(), userRequested.getEmail(), userRequested.getFirstName(),
+                    userRequested.getLastName(), userRequested.getImgURL(), userRequested.getPhoneNumber());
+        }
+        return userDetails;
+    }
     public User getUser(String username, String password){
         User userRequested=null;
         for(int i=0;i<users.size() && userRequested==null;i++){
@@ -167,10 +187,10 @@ public class UserBean {
     }
 
     public void saveColors(User user,String background_color,String toDo_color, String doing_color, String done_color){
-        user.setBackground_color(background_color);
-        user.setToDo_color(toDo_color);
-        user.setDoing_color(doing_color);
-        user.setDone_color(done_color);
+        user.changeBackground_color(background_color);
+        user.changeToDo_color(toDo_color);
+        user.changeDoing_color(doing_color);
+        user.changeDone_color(done_color);
         writeIntoJsonFile();
     }
 
@@ -190,7 +210,7 @@ public class UserBean {
 
     public boolean removeUser(String username) {
         for (User user : users) {
-            if (user.getUsername() == username) {
+            if (user.getUsername().equals(username)) {
                 users.remove(user);
                 return true;
             }

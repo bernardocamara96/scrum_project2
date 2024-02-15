@@ -34,7 +34,7 @@ public class Task {
         this.state=null;
     }
 
-    public Task(String title, String description, LocalDate initialDate, LocalDate endDate, int priority, String state) {
+    public Task(String title, String description, LocalDate initialDate, LocalDate endDate, int priority) {
         Date idTime=new Date();
         this.id =  idTime.getTime();;
         this.title = title;
@@ -42,7 +42,7 @@ public class Task {
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.priority=priority;
-        this.state=state;
+        this.state="toDo";
     }
 
 
@@ -58,8 +58,12 @@ public class Task {
         return state;
     }
 
-    public void setState(String state) {
+    public void changeState(String state) {
         this.state = state;
+    }
+
+    public void setState() {
+        this.state = "toDo";
     }
 
     public long getId() {
