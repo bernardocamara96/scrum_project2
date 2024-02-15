@@ -124,17 +124,17 @@ function saveChanges() {
       // Chame a função para atualizar a senha no backend
       updatePassword(username, password, newPassword);
       viewpassword.value = newPassword;
-      editField = true;
    }
    if (emailEdited) {
       const newEmail = document.getElementById("edit_email").value;
       if (isValidEmail(newEmail)) {
-         updateEmail(username, password, newEmail);
-         editField = true;
-      } else {
-         alert("Invalid email");
+         updateEmail(username, password, newEmail).then((response) => {
+            if (response == 200) {
+               editField = true;
+            }
+         });
       }
-   }
+   } else alert("Invalid email");
    if (firstNameEdited) {
       if (viewFirstName.value.length < 13) {
          const newFirstName = document.getElementById("edit_firstName").value;

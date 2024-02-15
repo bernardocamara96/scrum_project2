@@ -85,7 +85,6 @@ document.querySelector("#task_save").addEventListener("click", function () {
                      initialDate: initial_date.value,
                      endDate: end_date.value,
                      priority: priority_checked,
-                     state: "toDo",
                   };
 
                   addTask(username, pass, task);
