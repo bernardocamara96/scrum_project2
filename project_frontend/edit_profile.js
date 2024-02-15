@@ -129,8 +129,16 @@ function saveChanges() {
    if (emailEdited) {
       const newEmail = document.getElementById("edit_email").value;
       if (isValidEmail(newEmail)) {
-         updateEmail(username, password, newEmail);
-         editField = true;
+         updateEmail(username, password, newEmail).then ((response)=> {
+            if(response === 200){
+               editField = true;
+            }else{
+               alert("Email already exists");
+               editField = false;
+            }
+
+         });
+        
       } else {
          alert("Invalid email");
       }
@@ -150,12 +158,19 @@ function saveChanges() {
    if (phoneEdited) {
       const newPhone = document.getElementById("edit_phone").value;
       if (isValidPhoneNumber(newPhone)) {
-         updatePhoneNumber(username, password, newPhone);
-         editField = true;
-      } else {
-         alert("Invalid phone number");
-      }
+         updatePhoneNumber(username, password, newPhone).then ((response)=> {
+            if(response.status === 200){
+               editField = true;
+            }else{
+               alert("Phone number already exists");
+               editField = false;
+            }
+         });
+         
    }
+}
+
+
    return editField;
    // Reinicie as variáveis de controle
    passwordEdited = false;
@@ -172,7 +187,7 @@ bntSave.addEventListener("click", function () {
    if (saveChanges()) {
       alert("Your changes have been saved");
       window.location.href = "scrum.html";
-   } else {
+   } else if(!saveChanges()) {
       alert("You didn't change any field.");
    }
 });
@@ -229,7 +244,7 @@ async function updatePassword(username, password, newPassword) {
       },
    }).then(function (response) {
       if (response.status === 200) {
-         viewpassword.value = newPassword;
+         viewpassword.placeholder = newPassword;
          sessionStorage.setItem("pass", newPassword);
       } else if (response.status === 404) {
          alert("user not found");
@@ -251,13 +266,14 @@ async function updateEmail(username, pass, newEmail) {
       },
    }).then(function (response) {
       if (response.status === 200) {
-         viewEmail.value = newEmail;
+         viewEmail.placeholder = newEmail;
       } else if (response.status === 404) {
-         alert("Email already exists");
+         
       } else {
          alert("Invalid email");
       }
    });
+   
 }
 async function updateFirstName(username, password, newFirstName) {
    await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName", {
@@ -271,7 +287,7 @@ async function updateFirstName(username, password, newFirstName) {
       },
    }).then(function (response) {
       if (response.status === 200) {
-         viewFirstName.value = newFirstName;
+         viewFirstName.placeholder = newFirstName;
       } else if (response.status === 404) {
          alert("user not found");
       } else {
@@ -291,8 +307,7 @@ async function updateLastName(username, password, newLastName) {
       },
    }).then(function (response) {
       if (response.status === 200) {
-         alert("Last Name updated  successfully :)");
-         viewLastName.value = newLastName;
+         viewLastName.placeholder = newLastName;
       } else if (response.status === 404) {
          alert("user not found");
       } else {
@@ -312,13 +327,12 @@ async function updatePhoneNumber(username, password, newPhoneNumber) {
       },
    }).then(function (response) {
       if (response.status === 200) {
-         alert("Phone number updated  successfully :)");
          viewPhone.value = newPhoneNumber;
       } else if (response.status === 404) {
-         alert("user not found");
       } else {
          alert("Something went wrong");
       }
+
    });
 }
 
