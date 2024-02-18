@@ -3,10 +3,11 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @XmlRootElement
-public class User {
+public class User{
     @XmlElement
     private String username;
     @XmlElement
@@ -44,22 +45,6 @@ public class User {
         this.lastName=null;
         this.phoneNumber=null;
         this.imgURL=null;
-        this.tasks=null;
-        this.toDo_color=null;
-        this.doing_color=null;
-        this.done_color=null;
-        this.background_color=null;
-    }
-    public User(String username, String password, String email, String firstName, String lastName, String phoneNumber,
-                String imgURL) {
-
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.imgURL = imgURL;
         this.tasks=new ArrayList<>();
         this.toDo_color="#f1f2f4";
         this.doing_color="#f1f2f4";
@@ -72,30 +57,30 @@ public class User {
         return tasks;
     }
 
-    public void setTasks() {
-        this.tasks = new ArrayList<>();
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public String getToDo_color() {
         return toDo_color;
     }
 
-    public void setToDo_color() {this.toDo_color = "#f1f2f4";}
+    public void setToDo_color(String toDo_color) {this.toDo_color = toDo_color;}
 
     public String getDoing_color() {
         return doing_color;
     }
 
-    public void setDoing_color() {
-        this.doing_color = "#f1f2f4";
+    public void setDoing_color(String doing_color) {
+        this.doing_color = doing_color;
     }
 
     public String getDone_color() {
         return done_color;
     }
 
-    public void setDone_color() {
-        this.done_color = "#f1f2f4";
+    public void setDone_color(String done_color) {
+        this.done_color = done_color;
     }
 
     public String getBackground_color() {

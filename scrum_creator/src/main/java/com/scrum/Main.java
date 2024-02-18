@@ -2,26 +2,26 @@ package com.scrum;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("SCRUM POPULATOR");
+
         String generatorType = args.length != 0 ? args[0] : null;
 
         if (generatorType == null) {
-            System.out.println("Please provide a generator type");
+            System.out.println("Please choose a generator type");
         } else if (generatorType.equals("add_users")) {
 
             try {
-                boolean isNumberOfUsersProvided = args.length > 1;
-                if (!isNumberOfUsersProvided) {
-                    System.out.println("Please provide the number of users to be added");
+                boolean usersNumberString = args.length > 1;
+                if (!usersNumberString) {
+                    System.out.println("Please provide the number of users you want to add");
                     return;
                 } else if (args.length > 2) {
-                    System.out.println("Too many arguments");
+                    System.out.println("Too many arguments were given");
                     return;
                 }
-                int numberOfUsers = Integer.parseInt(args[1]);
+                int usersNumber = Integer.parseInt(args[1]);
 
-                UserPopulator userPopulator = new UserPopulator(numberOfUsers);
-                userPopulator.populate();
+                UserCreator userCreator = new UserCreator(usersNumber);
+                userCreator.create();
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number of users");
@@ -36,8 +36,8 @@ public class Main {
                 String password = args[2];
                 int numberOfTasks = Integer.parseInt(args[3]);
 
-                TaskPopulator taskPopulator = new TaskPopulator(username, password, numberOfTasks);
-                taskPopulator.populate();
+                TaskCreator taskPopulator = new TaskCreator(username, password, numberOfTasks);
+                taskPopulator.create();
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid number of tasks");

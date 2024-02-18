@@ -41,6 +41,10 @@ h1 {
    width: 250px;
 }
 
+header h1 {
+   cursor: pointer;
+}
+
 footer {
    position: fixed;
    width: 240px;
@@ -205,7 +209,7 @@ img {
    margin: 80px 10px 0px 10px;
    flex-shrink: 0;
    width: 330px;
-   height: 536px;
+   height: 552px;
    background-color: var(--white);
    border-radius: 12px;
    border-width: 2px;
@@ -312,7 +316,7 @@ img {
 .task_list {
    display: flex;
    flex-direction: column;
-   height: 453px;
+   height: 469px;
    overflow: auto;
 }
 
@@ -837,6 +841,7 @@ th {
 #task_creationTitle {
    color: var(--black);
    margin-bottom: 6px;
+   margin-left: 10px;
 }
 
 #description::placeholder {
@@ -1292,4 +1297,8 @@ label {
 }
 #username_edit {
    font-size: 18px;
+}
+
+#aside_editProfile {
+   margin-top: 70px;
 }

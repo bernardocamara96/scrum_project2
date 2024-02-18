@@ -8,23 +8,25 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-public class TaskPopulator {
+public class TaskCreator {
 
     private String username;
     private String password;
-    private int numberOfTasks;
+    private int tasksNumber;
 
-    public TaskPopulator() {
+    public TaskCreator() {
     }
 
-    public TaskPopulator(String username, String password, int numberOfTasks) {
+    public TaskCreator(String username, String password, int tasksNumber) {
         this.username = username;
         this.password = password;
-        this.numberOfTasks = numberOfTasks;
+        this.tasksNumber = tasksNumber;
     }
 
     public String getUsername() {
@@ -43,18 +45,18 @@ public class TaskPopulator {
         this.password = password;
     }
 
-    public int getNumberOfTasks() {
-        return numberOfTasks;
+    public int getTasksNumber() {
+        return tasksNumber;
     }
 
-    public void setNumberOfTasks(int numberOfTasks) {
-        this.numberOfTasks = numberOfTasks;
+    public void setTasksNumber(int tasksNumber) {
+        this.tasksNumber = tasksNumber;
     }
 
     //Function that populates the tasks
-    public void populate() {
-        System.out.println("Populating " + numberOfTasks + " tasks");
-        for (int i = 0; i < numberOfTasks; i++) {
+    public void create() {
+        System.out.println("Creating " + tasksNumber + " tasks");
+        for (int i = 0; i < tasksNumber; i++) {
             try {
                 URL url = new URL("https://www.boredapi.com/api/activity");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -77,7 +79,6 @@ public class TaskPopulator {
             } catch (IOException e) {
                 System.out.println("Failed to fetch task data" + e.getMessage());
             }
-            System.out.println("Task " + i + " populated");
         }
     }
 
@@ -86,14 +87,17 @@ public class TaskPopulator {
         Task task = null;
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            String title = jsonObject.getString("activity");
-            String description = jsonObject.getString("type");
+            String title = jsonObject.getString("type");
+            String description = jsonObject.getString("activity");
 
             int priority = generatePriority();
-            String initialDate = generateDate();
-            String finalDate = generateDate(initialDate);
+            String initialDateString = generateDate();
+            String endDateString = generateDate(initialDateString);
 
-            task = new Task(title, description, priority, initialDate, finalDate);
+            LocalDate initialDate=transformDate(initialDateString);
+            LocalDate endDate=transformDate(endDateString);
+
+            task = new Task(title, description, priority, initialDate, endDate);
 
         } catch (JSONException e) {
             System.out.println("Failed to parse task data" + e.getMessage());
@@ -104,24 +108,29 @@ public class TaskPopulator {
     //Function that adds the task
     public void addTask(Task task) {
         try {
-            URL url = new URL("http://localhost:8080/demo-1.0-SNAPSHOT/rest/task/add");
+            URL url = new URL("http://localhost:8080/project_backend/rest/tasks/create");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("username", username);
-            connection.setRequestProperty("password", password);
             connection.setDoOutput(true);
+            connection.setRequestProperty("username", username);
+            connection.setRequestProperty("pass", password);
             connection.getOutputStream().write(task.toString().getBytes());
             connection.getOutputStream().flush();
             connection.getOutputStream().close();
 
+
             int responseCode = connection.getResponseCode();
             BufferedReader reader;
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
+
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                System.out.println("Task added successfully: " + task + " for user " + username);
+                System.out.println("Task added successfully: " + task + " for " + username);
             } else {
+
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+
             }
 
             StringBuilder response = new StringBuilder();
@@ -131,10 +140,12 @@ public class TaskPopulator {
             }
             reader.close();
 
+
             // Parse the JSON response to get the message
             JSONObject jsonResponse = new JSONObject(response.toString());
+
             String message = jsonResponse.getString("message");
-            System.out.println("Response message: " + message);
+             System.out.println("Response message: " + message);
 
         } catch (Exception e) {
             System.out.println("Failed to fetch task data" + e.getMessage());
@@ -167,5 +178,11 @@ public class TaskPopulator {
         }
         c.add(Calendar.DATE, 1);
         return formatter.format(c.getTime());
+    }
+
+    public LocalDate transformDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateFormated = LocalDate.parse(date, formatter);
+        return dateFormated;
     }
 }

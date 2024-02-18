@@ -66,26 +66,24 @@ public class UserService {
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
-        int validateUser=userBean.validateUserRegister(user.getUsername(),user.getPassword(),user.getEmail(),user.getFirstName(),user.getLastName(),user.getPhoneNumber());
-        if(validateUser==10) {
-            if(userBean.isValidUrl(user.getImgURL())) {
-                User newUser=new User(user.getUsername(),user.getPassword(),user.getEmail(),user.getFirstName(),user.getLastName(),user.getPhoneNumber(),user.getImgURL());
-                userBean.addUser(newUser);
-                return Response.status(200).entity("A new user was created").build();
-            }
-            else return Response.status(400).entity("The URL is invalid").build();
-        }
-        else if(validateUser==4) return Response.status(400).entity("Phone number invalid").build();
+            int validateUser = userBean.validateUserRegister(user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getPhoneNumber());
+            if (validateUser == 10) {
+                if (userBean.isValidUrl(user.getImgURL())) {
+                    userBean.addUser(user);
+                    return Response.status(200).entity("A new user was created").build();
+                } else return Response.status(400).entity("The URL is invalid").build();
+            } else if (validateUser == 4) return Response.status(400).entity("Phone number invalid").build();
 
-        else if(validateUser==3) return Response.status(400).entity("Email invalid").build();
+            else if (validateUser == 3) return Response.status(400).entity("Email invalid").build();
 
-        else if(validateUser==2) return Response.status(409).entity("Email exists").build();
+            else if (validateUser == 2) return Response.status(409).entity("Email exists").build();
 
-        else if(validateUser==1) return Response.status(409).entity("Username exists").build();
+            else if (validateUser == 1) return Response.status(409).entity("Username exists").build();
 
-        else if(validateUser==0) return Response.status(400).entity("There are empty fields").build();
+            else if (validateUser == 0) return Response.status(400).entity("There are empty fields").build();
 
-        return Response.status(405).entity("Something went wrong").build();
+            return Response.status(405).entity("Something went wrong").build();
+
 
 
     }
@@ -151,8 +149,8 @@ public class UserService {
         }else{
             return Response.status(404).entity("not found").build();
         }
-
     }
+
     @PUT
     @Path("/updateFirstName")
     @Produces(MediaType.APPLICATION_JSON)

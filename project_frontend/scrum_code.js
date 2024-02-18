@@ -20,6 +20,7 @@ getUser(username, pass).then((result) => {
    } else {
       firstName_txt.textContent = user.firstName;
       user_img.src = user.imgURL;
+      console.log(user);
       colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
       getTasks(username, pass).then((result) => {
          let tasks = result;
@@ -48,8 +49,10 @@ writeDate();
 setInterval(writeDate, 1000);
 
 document.querySelector("#logout").addEventListener("click", function () {
-   sessionStorage.clear();
-   window.location.href = "login.html";
+   if (confirm("Are you sure you want to logout?")) {
+      sessionStorage.clear();
+      window.location.href = "login.html";
+   }
 });
 
 //Event Listenner para o botao EditProfile
@@ -113,6 +116,7 @@ document.querySelector("#btn_settings").addEventListener("click", function () {
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
 os eventos dos botões de delete e dos botões de edição das tarefas */
 function printTasks(tasks) {
+   console.log(tasks);
    document.querySelector("#toDo").innerHTML = "";
    document.querySelector("#doing").innerHTML = "";
    document.querySelector("#done").innerHTML = "";
@@ -139,6 +143,8 @@ function printTasks(tasks) {
       task_title.textContent = tasks[i].title;
       task_div.appendChild(task_title);
 
+      console.log(tasks[i].endDate);
+
       let date_now = new Date();
       date_now = date_now.getTime();
       let endDate = new Date(tasks[i].endDate);
@@ -149,7 +155,8 @@ function printTasks(tasks) {
       if (daysDiferences > 999) daysDiferences = 999;
       const task_day = document.createElement("div");
       task_day.classList.add("task_day");
-      task_day.textContent = daysDiferences;
+      if (tasks[i].endDate != "9999-12-31") task_day.textContent = daysDiferences;
+      task_div.appendChild(task_day);
 
       const task_btn = document.createElement("button");
       task_btn.innerHTML = "&#9998;";
@@ -165,7 +172,6 @@ function printTasks(tasks) {
 
       addEventsBeforeDrag(task_btnDelete, task_div);
 
-      task_div.appendChild(task_day);
       task_div.appendChild(task_btnDelete);
       task_div.appendChild(task_btn);
 
@@ -218,7 +224,8 @@ function taskCreationAddEvents(task_div, tasks) {
             document.querySelector("#modal_title").innerHTML = task_sel.title;
             document.querySelector("#modal_description").innerHTML = task_sel.description;
             document.querySelector("#modal_startDate").innerHTML = task_sel.initialDate;
-            document.querySelector("#modal_endDate").innerHTML = task_sel.endDate;
+            if (task_sel.endDate == "9999-12-31") document.querySelector("#modal_endDate").innerHTML = "";
+            else document.querySelector("#modal_endDate").innerHTML = task_sel.endDate;
             document.querySelector("#modal").style.visibility = "visible";
             document.querySelector("#background").style.visibility = "visible";
          }
