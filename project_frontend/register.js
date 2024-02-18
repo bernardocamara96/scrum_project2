@@ -38,16 +38,7 @@ form1.addEventListener("submit", function (e) {
 });
 
 document.querySelector("#register_confirmPhoto").addEventListener("click", function () {
-   let user = {
-      username: username_txt.value,
-      password: password.value,
-      email: email.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
-      phoneNumber: phone.value,
-      imgURL: photo.src,
-   };
-   addUser(user);
+   addUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value, photo.src);
    alert("Welcome to AgileUp! :)");
    window.location.href = "login.html";
 });
@@ -63,6 +54,10 @@ photo_label.addEventListener("change", function () {
    } else photo.src = "user.png";
 });
 
+document.querySelector("header h1").addEventListener("click", function () {
+   window.location.href = "login.html";
+});
+
 function isValidPhoneNumber(phoneNumber) {
    valideNumber = true;
 
@@ -75,12 +70,7 @@ function isValidPhoneNumber(phoneNumber) {
 }
 
 function isValidEmail(email) {
-   try {
-      new URL("mailto:" + email);
-      return true;
-   } catch {
-      return false;
-   }
+   return email.includes("@") && email.includes(".");
 }
 
 function isValidURL(url) {
@@ -121,14 +111,22 @@ async function validateUser(username_txt, password_txt, email_txt, firstName_txt
    });
 }
 
-async function addUser(user) {
+async function addUser(username, password, email, firstName, lastName, phoneNumber, imgURL) {
+   let user = {
+      username: username,
+      password: password,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      imgURL: imgURL,
+   };
    await fetch("http://localhost:8080/project_backend/rest/users/add", {
       method: "POST",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
       },
-
       body: JSON.stringify(user),
    });
 }

@@ -34,7 +34,9 @@ if (task_type == "edit") {
       title_txt.value = result.title;
       description_txt.value = result.description;
       initial_date.value = result.initialDate;
-      end_date.value = result.endDate;
+      if (result.endDate != "9999-12-31") {
+         end_date.value = result.endDate;
+      }
       priority_checked = result.priority;
       for (let i = 0; i < priority_array.length; i++) {
          if (priority_array[i].value == priority_checked) {
@@ -62,7 +64,7 @@ vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso e
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
 document.querySelector("#task_save").addEventListener("click", function () {
    if (title_txt.value != "") {
-      if (!end_date.value == "" && !initial_date.value == "") {
+      if (!initial_date.value == "") {
          let current_date = new Date();
          const year = current_date.getFullYear();
          const month = (current_date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-based
@@ -71,6 +73,9 @@ document.querySelector("#task_save").addEventListener("click", function () {
          current_date = `${year}-${month}-${day}`;
 
          if (initial_date.value >= current_date) {
+            if (end_date.value == "") {
+               end_date.value = "9999-12-31";
+            }
             if (end_date.value > initial_date.value) {
                if (task_type == "create") {
                   for (let i = 0; i < priority_array.length; i++) {
@@ -79,15 +84,15 @@ document.querySelector("#task_save").addEventListener("click", function () {
                      }
                   }
 
-                  let task = {
-                     title: title_txt.value,
-                     description: description_txt.value,
-                     initialDate: initial_date.value,
-                     endDate: end_date.value,
-                     priority: priority_checked,
-                  };
-
-                  addTask(username, pass, task);
+                  addTask(
+                     username,
+                     pass,
+                     title_txt.value,
+                     description_txt.value,
+                     initial_date.value,
+                     end_date.value,
+                     priority_checked
+                  );
 
                   window.location.href = "scrum.html";
                } else {
@@ -115,13 +120,13 @@ document.querySelector("#task_save").addEventListener("click", function () {
                   }
                }
             } else {
-               alert("The end date must be greater than the initial date");
+               alert("The end date must be greater than the initial date.");
             }
          } else {
-            alert("The initial date must be greater than the current date");
+            alert("The initial date must be greater than the current date.");
          }
       } else {
-         alert("You need to put the initial and end date");
+         alert("You need to put the initial date.");
       }
    } else {
       alert("Need to put a task title.");
@@ -153,6 +158,11 @@ document.querySelector("#task_delete").addEventListener("click", function () {
    }
 });
 
+document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
+   if (confirmExit()) {
+      window.location.href = "scrum.html";
+   }
+});
 //Botão de fecho que direciona o utilizador para a página principal da aplicação
 document.querySelector("#cancel").addEventListener("click", function () {
    if (confirmExit()) {
@@ -160,10 +170,18 @@ document.querySelector("#cancel").addEventListener("click", function () {
    }
 });
 
+document.querySelector("header h1").addEventListener("click", function () {
+   if (confirmExit()) {
+      window.location.href = "scrum.html";
+   }
+});
+
 //Botão para direcionar o utlizador para a página de login
 document.querySelector("#logout").addEventListener("click", function () {
-   sessionStorage.clear();
-   window.location.href = "login.html";
+   if (confirm("Are you sure you want to logout?")) {
+      sessionStorage.clear();
+      window.location.href = "login.html";
+   }
 });
 
 //Função para confirmar delete
@@ -195,23 +213,6 @@ function writeDate() {
 }
 
 async function updateTask(username, pass, id, title, description, initialDate, endDate, priority) {
-   console.log(
-      username +
-         " " +
-         pass +
-         " " +
-         id +
-         " " +
-         title +
-         " " +
-         description +
-         " " +
-         initialDate +
-         " " +
-         endDate +
-         " " +
-         priority
-   );
    await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
       method: "PUT",
       headers: {
@@ -235,7 +236,14 @@ async function updateTask(username, pass, id, title, description, initialDate, e
    });
 }
 
-async function addTask(username_value, pass, task) {
+async function addTask(username_value, pass, title, description, initialDate, endDate, priority) {
+   let task = {
+      title: title,
+      description: description,
+      initialDate: initialDate,
+      endDate: endDate,
+      priority: priority,
+   };
    await fetch("http://localhost:8080/project_backend/rest/tasks/create", {
       method: "POST",
       headers: {

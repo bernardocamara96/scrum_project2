@@ -45,7 +45,7 @@ public class UserBean {
     }
 
     public void addTask(User user, Task task){
-        user.addTask(task);
+        user.getTasks().add(task);
         writeIntoJsonFile();
     }
 
@@ -286,9 +286,9 @@ public class UserBean {
     public boolean updatePhoneNumber(String username, String password, String phoneNumber) {
         boolean fieldChanged = false;
             User u = getUser(username, password);
-            boolean phoneExists1 = phoneExists(phoneNumber);
+
             boolean phoneValid=isValidPhoneNumber(phoneNumber);
-            if (u!=null && !phoneExists1 && phoneValid) {
+            if (u!=null && phoneValid) {
                 u.setPhoneNumber(phoneNumber);
                 writeIntoJsonFile();
                 fieldChanged = true;
@@ -306,22 +306,6 @@ public class UserBean {
         return phoneExists;
     }
 
-
-
-
-
-
-    /*public boolean updateActivity(int id, Activity activity) {
-        for (Activity a : activities) {
-            if (a.getId() == id) {
-                a.setTitle(activity.getTitle());
-                a.setDescription(activity.getDescription());
-                writeIntoJsonFile();
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     private void writeIntoJsonFile(){
         try {

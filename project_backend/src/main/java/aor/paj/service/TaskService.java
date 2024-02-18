@@ -111,10 +111,10 @@ public class TaskService {
             return Response.status(404).entity("This user doesn't exist").build();
         }
         else {
+
             LocalDate currentDate=LocalDate.now();
             if(!task.getTitle().equals("") && task.getEndDate().isAfter(task.getInitialDate()) && (task.getInitialDate().isAfter(currentDate) || task.getInitialDate().isEqual(currentDate))) {
-                Task newTask=new Task(task.getTitle(),task.getDescription(),task.getInitialDate(),task.getEndDate(), task.getPriority());
-                userBean.addTask(userRequested, newTask);
+                userBean.addTask(userRequested, task);
                 return Response.status(200).entity("Task created").build();
             }
             else{

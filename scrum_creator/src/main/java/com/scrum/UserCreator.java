@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,17 +12,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class UserPopulator {
-    private int numberOfUsers;
+public class UserCreator {
+    private int usersNumber;
 
-    public UserPopulator(int numberOfUsers) {
-        this.numberOfUsers = numberOfUsers;
+    public UserCreator(int numberOfUsers) {
+        this.usersNumber = numberOfUsers;
     }
 
     //Function that populates the users
-    public void populate() {
-        System.out.println("Populating " + numberOfUsers + " users");
-        for (int i = 0; i < numberOfUsers; i++) {
+    public void create() {
+        System.out.println("Creating " + usersNumber + " users");
+        for (int i = 0; i < usersNumber; i++) {
             // Make a request to randomuser.me API
             try {
                 URL url = new URL("https://randomuser.me/api/");
@@ -70,12 +71,11 @@ public class UserPopulator {
                 String phone = userObject.getString("phone");
                 String photoURL = userObject.getJSONObject("picture").getString("thumbnail");
 
-
                 // Create a User object with the extracted data
                 user = new User(username, password, email, firstName, lastName, phone, photoURL);
             }
         } catch (JSONException e) {
-            System.out.println("Failed to parse user data" + e.getMessage());
+            System.out.println("Failed to receive user data" + e.getMessage());
         }
 
         return user;
@@ -84,12 +84,13 @@ public class UserPopulator {
     //Function that adds the user
     public void addUser(User user) {
         try {
-            URL url = new URL("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/add");
+            URL url = new URL("http://localhost:8080/project_backend/rest/users/add");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
-            connection.getOutputStream().write(user.toString().getBytes());
+            JSONObject jsonUser=new JSONObject(user);
+            connection.getOutputStream().write(jsonUser.toString().getBytes());
             connection.getOutputStream().flush();
             connection.getOutputStream().close();
 

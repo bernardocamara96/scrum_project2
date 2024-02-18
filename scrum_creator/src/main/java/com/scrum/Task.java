@@ -1,21 +1,23 @@
 package com.scrum;
 
+import java.time.LocalDate;
+
 public class Task {
     private String title;
     private String description;
     private int priority;
-    private String initialDate;
-    private String finalDate;
+    private LocalDate initialDate;
+    private LocalDate endDate;
 
     public Task() {
     }
 
-    public Task(String title, String description, int priority, String initialDate, String finalDate) {
+    public Task(String title, String description, int priority, LocalDate initialDate, LocalDate endDate) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.initialDate = initialDate;
-        this.finalDate = finalDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class Task {
                 ", \"description\":\"" + description + "\"" +
                 ", \"priority\":" + priority  +
                 ", \"initialDate\":\"" + initialDate + "\"" +
-                ", \"finalDate\":\"" + finalDate + "\"}";
+                ", \"endDate\":\"" + endDate + "\"}";
     }
 
     public String getTitle() {
@@ -52,19 +54,19 @@ public class Task {
         this.priority = priority;
     }
 
-    public String getInitialDate() {
+    public LocalDate getInitialDate() {
         return initialDate;
     }
 
-    public void setInitialDate(String initialDate) {
+    public void setInitialDate(LocalDate initialDate) {
         this.initialDate = initialDate;
     }
 
-    public String getFinalDate() {
-        return finalDate;
+    public LocalDate getFinalDate() {
+        return endDate;
     }
 
-    public void setFinalDate(String finalDate) {
-        this.finalDate = finalDate;
+    public void setFinalDate(LocalDate finalDate) {
+        this.endDate = endDate;
     }
 }
