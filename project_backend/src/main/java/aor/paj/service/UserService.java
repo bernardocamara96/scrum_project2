@@ -111,7 +111,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeUser(@QueryParam("username")String username) {
         boolean deleted = userBean.removeUser(username);
-        if (!deleted) return Response.status(200).entity("User with this username is not found").build();
+        if (!deleted) return Response.status(404).entity("User with this username is not found").build();
 
         return Response.status(200).entity("deleted").build();
     }

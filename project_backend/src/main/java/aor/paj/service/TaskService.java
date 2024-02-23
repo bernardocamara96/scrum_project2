@@ -27,6 +27,7 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Task> getTasks(@HeaderParam("username")String username, @HeaderParam("pass")String password) {
         User user=userBean.getUser(username, password);
+        if (user==null) return null;
         return user.getTasks();
     }
 
